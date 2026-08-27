@@ -1,6 +1,26 @@
 import { supabase } from '@/lib/supabase';
 import { getUserProfile } from '@/services/userService';
 
+function isInvalidCredentialsError(error) {
+  const code = error?.code || error?.error_code;
+  const message = String(error?.message || '');
+  return code === 'invalid_credentials' || /invalid login credentials/i.test(message);
+}
+
+async function isEmailRegistered(email) {
+  try {
+    const res = await fetch('/api/auth/account-status', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email }),
+    });
+    const body = await res.json().catch(() => ({}));
+    return Boolean(body.registered);
+  } catch {
+    return false;
+  }
+}
+
 export async function signInUser({ email, password }) {
   if (!email || !password) {
     throw new Error('Email dan password harus diisi.');
@@ -11,8 +31,17 @@ export async function signInUser({ email, password }) {
     password,
   });
 
-  if (error) throw error;
-  return data;
+  if (!error) return data;
+
+  if (isInvalidCredentialsError(error)) {
+    const registered = await isEmailRegistered(email);
+    if (!registered) {
+      throw new Error('Account is not available or not registered.');
+    }
+    throw new Error('Invalid email or password.');
+  }
+
+  throw error;
 }
 
 export async function signOutUser() {
@@ -22,9 +51,19 @@ export async function signOutUser() {
 }
 
 export async function deleteCurrentUserAccount() {
+  const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+
+  if (sessionError) throw sessionError;
+  if (!session?.access_token) {
+    throw new Error('Unauthorized: Anda belum login.');
+  }
+
   const res = await fetch('/api/user/delete', {
     method: 'POST',
     credentials: 'include',
+    headers: {
+      Authorization: `Bearer ${session.access_token}`,
+    },
   });
 
   const body = await res.json().catch(() => ({}));
@@ -47,10 +86,15 @@ export async function signUpUser({ email, password, fullName }) {
     throw new Error('Email, password, dan nama lengkap harus diisi.');
   }
 
+  const emailRedirectTo = typeof window !== 'undefined'
+    ? `${window.location.origin}/auth/verified`
+    : 'http://localhost:3000/auth/verified';
+
   const { data, error } = await supabase.auth.signUp({
     email,
     password,
     options: {
+      emailRedirectTo,
       data: {
         full_name: fullName,
       },

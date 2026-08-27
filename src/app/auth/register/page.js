@@ -40,10 +40,10 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen bg-brand-cream-light flex flex-col">
-      <header className="bg-brand-blue py-4">
+    <div className="min-h-screen bg-brand-cream flex flex-col">
+      <header className="bg-brand-green py-4">
         <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
-          <Link href="/" className="text-3xl font-bold text-brand-cream-dark">
+          <Link href="/" className="text-3xl font-bold text-brand-cream">
             Cycle Clothes
           </Link>
         </div>
@@ -53,7 +53,7 @@ export default function RegisterPage() {
         <div className="w-full max-w-md">
           <div className="bg-white rounded-2xl shadow-lg p-8">
             <div className="text-center mb-8">
-              <h1 className="text-2xl font-bold text-brand-blue mb-2">
+              <h1 className="text-2xl font-bold text-brand-green mb-2">
                 Daftar Akun Baru
               </h1>
               <p className="text-gray-600">
@@ -99,7 +99,7 @@ export default function RegisterPage() {
                     onChange={handleChange}
                     required
                     placeholder="Masukkan nama lengkap..."
-                    className="text-black w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-cream-dark focus:border-brand-cream-dark outline-none transition-colors"
+                    className="text-black w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-light-green focus:border-brand-light-green outline-none transition-colors"
                   />
                 </div>
 
@@ -115,7 +115,7 @@ export default function RegisterPage() {
                     onChange={handleChange}
                     required
                     placeholder="nama@email.com"
-                    className="text-black w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-cream-dark focus:border-brand-cream-dark outline-none transition-colors"
+                    className="text-black w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-light-green focus:border-brand-light-green outline-none transition-colors"
                   />
                 </div>
 
@@ -132,14 +132,14 @@ export default function RegisterPage() {
                     required
                     minLength={6}
                     placeholder="Minimal 6 karakter..."
-                    className="text-black w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-cream-dark focus:border-brand-cream-dark outline-none transition-colors"
+                    className="text-black w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-light-green focus:border-brand-light-green outline-none transition-colors"
                   />
                 </div>
 
                 <button
                   type="submit"
                   disabled={isLoading}
-                  className="w-full bg-brand-blue text-white font-semibold py-3 px-4 rounded-lg hover:bg-opacity-90 focus:ring-2 focus:ring-offset-2 focus:ring-brand-blue disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                  className="w-full bg-brand-green text-brand-cream font-semibold py-3 px-4 rounded-lg hover:bg-opacity-90 focus:ring-2 focus:ring-offset-2 focus:ring-brand-green disabled:opacity-50 disabled:cursor-not-allowed transition-all"
                 >
                   {isLoading ? (
                     <span className="flex items-center justify-center">
@@ -159,7 +159,7 @@ export default function RegisterPage() {
             <div className="mt-8 text-center">
               <p className="text-gray-600">
                 Sudah punya akun?{' '}
-                <Link href="/login" className="font-semibold text-brand-blue hover:underline">
+                <Link href="/login" className="font-semibold text-brand-green hover:underline">
                   Masuk sekarang
                 </Link>
               </p>

@@ -1,6 +1,8 @@
 'use client';
 
+import { useState } from 'react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 
 function HeartIcon({ className }) {
   return (
@@ -43,14 +45,25 @@ const NAV_LINKS = [
 ];
 
 export default function Navbar() {
+  const pathname = usePathname();
+  const [mobileOpen, setMobileOpen] = useState(false);
+
+  function linkClass(href) {
+    const isActive = pathname === href;
+    return [
+      'text-xl lg:text-2xl font-medium whitespace-nowrap transition-opacity',
+      isActive ? 'text-white' : 'text-brand-cream hover:opacity-80',
+    ].join(' ');
+  }
+
   return (
     <header className="w-full sticky top-0 z-50">
-      <div className="w-full bg-brand-cream-light">
+      <div className="w-full bg-brand-light-green">
         <div className="mx-auto max-w-7xl px-6 sm:px-8 lg:px-12">
           <div className="flex h-14 items-center justify-end">
             <Link
               href="/login"
-              className="text-sm font-medium text-brand-blue hover:opacity-80 transition-opacity"
+              className="text-sm font-medium text-brand-green hover:opacity-80 transition-opacity"
             >
               Login
             </Link>
@@ -58,22 +71,18 @@ export default function Navbar() {
         </div>
       </div>
 
-      <div className="w-full bg-brand-blue">
+      <div className="w-full bg-brand-green">
         <div className="mx-auto max-w-7xl px-6 sm:px-8 lg:px-12">
           <div className="flex h-20 items-center justify-between gap-6">
             <div className="flex items-center shrink-0">
-              <Link href="/" className="text-5xl sm:text-6xl font-bold tracking-wide text-brand-cream-dark">
+              <Link href="/" className="text-5xl sm:text-6xl font-bold tracking-wide text-brand-cream">
                 LOGO
               </Link>
             </div>
 
             <nav className="hidden md:flex items-center justify-center gap-8 lg:gap-10">
               {NAV_LINKS.map((link) => (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className="text-xl lg:text-2xl font-medium text-brand-cream-dark hover:opacity-80 transition-opacity whitespace-nowrap"
-                >
+                <Link key={link.href} href={link.href} className={linkClass(link.href)}>
                   {link.label}
                 </Link>
               ))}
@@ -83,19 +92,51 @@ export default function Navbar() {
               <button
                 type="button"
                 aria-label="Favorit"
-                className="text-brand-cream-dark hover:opacity-80 transition-opacity"
+                className="text-brand-cream hover:opacity-80 transition-opacity"
               >
                 <HeartIcon className="h-8 w-8 sm:h-9 sm:w-9" />
               </button>
               <button
                 type="button"
                 aria-label="Keranjang belanja"
-                className="text-brand-cream-dark hover:opacity-80 transition-opacity"
+                className="text-brand-cream hover:opacity-80 transition-opacity"
               >
                 <ShoppingCartIcon className="h-9 w-9 sm:h-10 sm:w-10" />
               </button>
+              <button
+                type="button"
+                aria-label={mobileOpen ? 'Tutup menu' : 'Buka menu'}
+                aria-expanded={mobileOpen}
+                onClick={() => setMobileOpen((open) => !open)}
+                className="md:hidden text-brand-cream hover:opacity-80 transition-opacity"
+              >
+                {mobileOpen ? (
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.8} stroke="currentColor" className="h-8 w-8">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                ) : (
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.8} stroke="currentColor" className="h-8 w-8">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+                  </svg>
+                )}
+              </button>
             </div>
           </div>
+
+          {mobileOpen && (
+            <nav className="md:hidden pb-5 flex flex-col gap-3">
+              {NAV_LINKS.map((link) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  onClick={() => setMobileOpen(false)}
+                  className={linkClass(link.href)}
+                >
+                  {link.label}
+                </Link>
+              ))}
+            </nav>
+          )}
         </div>
       </div>
     </header>

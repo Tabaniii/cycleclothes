@@ -42,11 +42,11 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-brand-cream-light flex flex-col">
+    <div className="min-h-screen bg-brand-cream flex flex-col">
       {/* Header */}
-      <header className="bg-brand-blue py-4">
+      <header className="bg-brand-green py-4">
         <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
-          <Link href="/" className="text-3xl font-bold text-brand-cream-dark">
+          <Link href="/" className="text-3xl font-bold text-brand-cream">
             Cycle Clothes
           </Link>
         </div>
@@ -58,7 +58,7 @@ export default function LoginPage() {
           <div className="bg-white rounded-2xl shadow-lg p-8">
             {/* Title */}
             <div className="text-center mb-8">
-              <h1 className="text-2xl font-bold text-brand-blue mb-2">
+              <h1 className="text-2xl font-bold text-brand-green mb-2">
                 Selamat Datang Kembali
               </h1>
               <p className="text-gray-600">
@@ -90,7 +90,7 @@ export default function LoginPage() {
                   onChange={handleChange}
                   required
                   placeholder="nama@email.com"
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-cream-dark focus:border-brand-cream-dark outline-none transition-colors"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-light-green focus:border-brand-light-green outline-none transition-colors"
                 />
               </div>
 
@@ -109,7 +109,7 @@ export default function LoginPage() {
                   onChange={handleChange}
                   required
                   placeholder="••••••••"
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-cream-dark focus:border-brand-cream-dark outline-none transition-colors"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-light-green focus:border-brand-light-green outline-none transition-colors"
                 />
               </div>
 
@@ -117,13 +117,13 @@ export default function LoginPage() {
                 <label className="flex items-center">
                   <input
                     type="checkbox"
-                    className="w-4 h-4 text-brand-blue border-gray-300 rounded focus:ring-brand-blue"
+                    className="w-4 h-4 text-brand-green border-gray-300 rounded focus:ring-brand-green"
                   />
                   <span className="ml-2 text-sm text-gray-600">Ingat saya</span>
                 </label>
                 <Link 
                   href="/auth/forgot-password" 
-                  className="text-sm text-brand-blue hover:underline"
+                  className="text-sm text-brand-green hover:underline"
                 >
                   Lupa password?
                 </Link>
@@ -132,7 +132,7 @@ export default function LoginPage() {
               <button
                 type="submit"
                 disabled={isLoading}
-                className="w-full bg-brand-blue text-white font-semibold py-3 px-4 rounded-lg hover:bg-opacity-90 focus:ring-2 focus:ring-offset-2 focus:ring-brand-blue disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                className="w-full bg-brand-green text-brand-cream font-semibold py-3 px-4 rounded-lg hover:bg-opacity-90 focus:ring-2 focus:ring-offset-2 focus:ring-brand-green disabled:opacity-50 disabled:cursor-not-allowed transition-all"
               >
                 {isLoading ? (
                   <span className="flex items-center justify-center">
@@ -152,7 +152,7 @@ export default function LoginPage() {
             <div className="mt-8 text-center">
               <p className="text-gray-600">
                 Belum punya akun?{' '}
-                <Link href="/auth/register" className="font-semibold text-brand-blue hover:underline">
+                <Link href="/auth/register" className="font-semibold text-brand-green hover:underline">
                   Daftar sekarang
                 </Link>
               </p>

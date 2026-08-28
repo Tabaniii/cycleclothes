@@ -13,8 +13,8 @@ const NAV_COLUMNS = [
     links: [
       { label: 'Donasi', href: '/donasi' },
       { label: 'Preloved', href: '/preloved' },
-      { label: 'Instagram', href: 'https://instagram.com' },
-      { label: 'WhatsApp', href: 'https://wa.me/' },
+      { label: 'Instagram', href: 'https://www.instagram.com/cycleclothes.id/' },
+      { label: 'LinkedIn', href: 'https://www.linkedin.com/company/cycleclothes.id/' },
     ],
   },
   {

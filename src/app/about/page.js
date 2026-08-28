@@ -1,6 +1,7 @@
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
-import { TEAM_MEMBERS } from '@/data/team';
+import ContactSection from '@/components/ContactSection';
+import TeamGallery from '@/components/TeamGallery';
 
 export const metadata = {
   title: 'About | Cycle Clothes',
@@ -23,27 +24,9 @@ const VALUES = [
   },
 ];
 
-function getInitials(name) {
-  return name
-    .split(' ')
-    .filter(Boolean)
-    .slice(0, 2)
-    .map((part) => part[0])
-    .join('')
-    .toUpperCase();
-}
-
-function GitHubIcon({ className }) {
-  return (
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className={className} aria-hidden="true">
-      <path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" />
-    </svg>
-  );
-}
-
 export default function AboutPage() {
   return (
-    <div className="min-h-screen flex flex-col bg-white font-sans">
+    <div className="min-h-dvh flex flex-col bg-white font-sans">
       <Navbar />
 
       <main className="flex-1">
@@ -96,9 +79,9 @@ export default function AboutPage() {
           </div>
         </section>
 
-        <section className="bg-brand-cream-light">
-          <div className="mx-auto max-w-7xl px-6 sm:px-8 lg:px-12 py-14 sm:py-16">
-            <div className="text-center max-w-2xl mx-auto mb-10">
+        <section className="bg-brand-cream-light overflow-hidden">
+          <div className="mx-auto max-w-7xl px-6 sm:px-8 lg:px-12 pt-14 sm:pt-16">
+            <div className="text-center max-w-2xl mx-auto mb-6 sm:mb-8">
               <h2 className="text-2xl sm:text-3xl font-bold text-brand-blue">
                 Our Team
               </h2>
@@ -106,54 +89,10 @@ export default function AboutPage() {
                 One team, one goal: making clothes cycle back to the right people.
               </p>
             </div>
-
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {TEAM_MEMBERS.map((member) => (
-                <article
-                  key={member.name}
-                  className="bg-white rounded-2xl shadow-sm border border-brand-cream-dark/20 p-6 flex flex-col"
-                >
-                  <div className="h-20 w-20 rounded-full bg-brand-blue flex items-center justify-center overflow-hidden border-2 border-brand-cream-dark ring-4 ring-brand-cream-light">
-                    {member.image ? (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img
-                        src={member.image}
-                        alt={member.name}
-                        className="h-full w-full object-cover"
-                      />
-                    ) : (
-                      <span className="text-2xl font-bold text-brand-cream-dark">
-                        {getInitials(member.name)}
-                      </span>
-                    )}
-                  </div>
-
-                  <h3 className="mt-5 text-xl font-bold text-brand-blue">{member.name}</h3>
-                  <p className="mt-1 text-sm font-semibold text-brand-cream-dark">{member.role}</p>
-                  <p className="mt-3 text-sm text-gray-600 leading-relaxed flex-1">{member.bio}</p>
-
-                  <blockquote className="mt-4 text-sm italic text-gray-500 border-l-2 border-brand-cream-dark pl-3">
-                    “{member.quote}”
-                  </blockquote>
-
-                  {member.github ? (
-                    <a
-                      href={member.github}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="mt-5 inline-flex items-center gap-2 text-sm font-medium text-brand-blue hover:opacity-80 transition-opacity"
-                    >
-                      <GitHubIcon className="h-5 w-5" />
-                      GitHub
-                    </a>
-                  ) : (
-                    <div className="mt-5 h-5" />
-                  )}
-                </article>
-              ))}
-            </div>
           </div>
+          <TeamGallery />
         </section>
+        <ContactSection />
       </main>
 
       <Footer />

@@ -1,4 +1,5 @@
 import Navbar from '@/components/Navbar';
+import Footer from '@/components/Footer';
 
 export default function Home() {
   return (
@@ -8,6 +9,7 @@ export default function Home() {
         <div className="mx-auto max-w-7xl px-6 sm:px-8 lg:px-12 py-12">
         </div>
       </main>
+      <Footer />
     </div>
   );
 }

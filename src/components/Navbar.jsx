@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import FoldText from './FoldText';
+import Logo from './Logo';
 
 const NAV_LINKS = [
   { label: 'Home', href: '/' },
@@ -55,17 +56,36 @@ function TaglineBanner() {
   );
 }
 
+function isActivePath(pathname, href) {
+  if (href === '/') return pathname === '/';
+  return pathname === href || pathname.startsWith(`${href}/`);
+}
+
+function NavLink({ href, label, pathname, onClick, className = '' }) {
+  const isActive = isActivePath(pathname, href);
+
+  return (
+    <Link
+      href={href}
+      onClick={onClick}
+      aria-current={isActive ? 'page' : undefined}
+      className={[
+        'relative inline-flex w-fit pb-1 text-xs lg:text-sm font-medium uppercase tracking-[0.18em] whitespace-nowrap transition-colors',
+        'after:absolute after:left-0 after:bottom-0 after:h-[1.5px] after:w-full after:origin-left after:bg-brand-light-green after:transition-transform after:duration-300 after:ease-out motion-reduce:after:transition-none',
+        isActive
+          ? 'text-white after:scale-x-100'
+          : 'text-brand-cream after:scale-x-0 hover:text-brand-light-green hover:after:scale-x-100',
+        className,
+      ].join(' ')}
+    >
+      {label}
+    </Link>
+  );
+}
+
 export default function Navbar() {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
-
-  function linkClass(href) {
-    const isActive = pathname === href;
-    return [
-      'text-xs lg:text-sm font-medium uppercase tracking-[0.18em] whitespace-nowrap transition-colors',
-      isActive ? 'text-white' : 'text-brand-cream hover:text-brand-light-green',
-    ].join(' ');
-  }
 
   return (
     <header className="w-full sticky top-0 z-50">
@@ -77,17 +97,16 @@ export default function Navbar() {
             <div className="justify-self-start">
               <Link
                 href="/"
-                className="text-2xl sm:text-3xl font-bold uppercase tracking-[0.2em] text-brand-cream"
+                aria-label="Cycle Clothes"
+                className="block text-brand-cream hover:opacity-90 transition-opacity"
               >
-                LOGO
+                <Logo className="h-6 sm:h-7 w-auto max-w-[200px] sm:max-w-[260px]" />
               </Link>
             </div>
 
             <nav className="hidden md:flex items-center justify-center gap-7 lg:gap-10 justify-self-center">
               {NAV_LINKS.map((link) => (
-                <Link key={link.href} href={link.href} className={linkClass(link.href)}>
-                  {link.label}
-                </Link>
+                <NavLink key={link.href} href={link.href} label={link.label} pathname={pathname} />
               ))}
             </nav>
 
@@ -119,22 +138,20 @@ export default function Navbar() {
           {mobileOpen && (
             <nav className="md:hidden pb-5 flex flex-col gap-3">
               {NAV_LINKS.map((link) => (
-                <Link
+                <NavLink
                   key={link.href}
                   href={link.href}
+                  label={link.label}
+                  pathname={pathname}
                   onClick={() => setMobileOpen(false)}
-                  className={linkClass(link.href)}
-                >
-                  {link.label}
-                </Link>
+                />
               ))}
-              <Link
+              <NavLink
                 href="/login"
+                label="Login"
+                pathname={pathname}
                 onClick={() => setMobileOpen(false)}
-                className="text-xs font-medium uppercase tracking-[0.18em] text-brand-cream hover:text-brand-light-green"
-              >
-                Login
-              </Link>
+              />
             </nav>
           )}
         </div>

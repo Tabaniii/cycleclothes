@@ -1,5 +1,5 @@
-import Link from 'next/link';
 import Navbar from '@/components/Navbar';
+import Footer from '@/components/Footer';
 import { TEAM_MEMBERS } from '@/data/team';
 
 export const metadata = {
@@ -156,16 +156,7 @@ export default function AboutPage() {
         </section>
       </main>
 
-      <footer className="bg-brand-blue">
-        <div className="mx-auto max-w-7xl px-6 sm:px-8 lg:px-12 py-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p className="text-sm text-brand-cream-light">
-            © {new Date().getFullYear()} Cycle Clothes. Dibuat oleh kelompok kami.
-          </p>
-          <Link href="/" className="text-sm font-medium text-brand-cream-dark hover:opacity-80 transition-opacity">
-            Kembali ke Home
-          </Link>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }

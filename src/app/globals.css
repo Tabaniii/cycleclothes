@@ -22,6 +22,7 @@
   --color-brand-cream-dark: var(--brand-cream-dark);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --font-script: var(--font-great-vibes);
 }
 
 @media (prefers-color-scheme: dark) {

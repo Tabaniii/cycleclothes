@@ -31,7 +31,7 @@ export async function updateUserProfile(userId, updateData) {
     throw new Error('updateData cannot be empty');
   }
 
-  const allowedFields = ['full_name', 'avatar_url', 'phone_number'];
+  const allowedFields = ['full_name', 'avatar_url', 'phone_number', 'city'];
   const filteredData = {};
 
   for (const key of allowedFields) {
@@ -67,7 +67,7 @@ export async function createProfileIfMissing(userId, profileData = {}) {
   if (checkErr) throw checkErr;
   if (existing) return existing;
 
-  const allowedFields = ['full_name', 'avatar_url', 'phone_number'];
+  const allowedFields = ['full_name', 'avatar_url', 'phone_number', 'city'];
   const insertData = { id: userId };
 
   for (const key of allowedFields) {

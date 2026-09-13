@@ -5,6 +5,8 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import FoldText from './FoldText';
 import Logo from './Logo';
+import { supabase } from '@/lib/supabase';
+import { useOptionalWishlist } from '@/components/WishlistProvider';
 
 const NAV_LINKS = [
   { label: 'Home', href: '/' },
@@ -157,7 +159,7 @@ function QuickAction({ href, label, icon, onClick }) {
   );
 }
 
-function MobileDrawer({ open, onClose, pathname }) {
+function MobileDrawer({ open, onClose, pathname, loggedIn }) {
   useEffect(() => {
     if (!open) return undefined;
 
@@ -203,12 +205,13 @@ function MobileDrawer({ open, onClose, pathname }) {
 
         <div className="grid grid-cols-3 divide-x divide-brand-green/15 border-b border-brand-green/15">
           <QuickAction
-            href="/login"
-            label="Masuk"
+            href={loggedIn ? '/dashboard' : '/login'}
+            label={loggedIn ? 'Akun' : 'Masuk'}
             onClick={onClose}
             icon={<UserIcon className="h-6 w-6" />}
           />
           <QuickAction
+            href={loggedIn ? '/wishlist' : '/login'}
             label="Wishlist"
             onClick={onClose}
             icon={<HeartIcon className="h-6 w-6" />}
@@ -260,7 +263,17 @@ function MobileDrawer({ open, onClose, pathname }) {
 
 export default function Navbar() {
   const pathname = usePathname();
+  const wishlist = useOptionalWishlist();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [loggedIn, setLoggedIn] = useState(false);
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data }) => setLoggedIn(Boolean(data.session)));
+    const { data } = supabase.auth.onAuthStateChange((_event, session) => {
+      setLoggedIn(Boolean(session));
+    });
+    return () => data.subscription.unsubscribe();
+  }, []);
 
   return (
     <>
@@ -290,10 +303,19 @@ export default function Navbar() {
                 <button type="button" aria-label="Cari" className="hidden md:inline-flex hover:opacity-70 transition-opacity">
                   <NavIcon src="/incons/search.svg" alt="" />
                 </button>
-                <button type="button" aria-label="Wishlist" className="hover:opacity-70 transition-opacity">
+                <Link
+                  href={loggedIn ? '/wishlist' : '/login'}
+                  aria-label="Wishlist"
+                  className="relative hover:opacity-70 transition-opacity text-brand-cream"
+                >
                   <NavIcon src="/incons/wishlist.svg" alt="" />
-                </button>
-                <Link href="/login" aria-label="Akun" className="hidden md:inline-flex hover:opacity-70 transition-opacity text-brand-cream">
+                  {loggedIn && wishlist?.count ? (
+                    <span className="absolute -right-2 -top-2 min-w-4 rounded-full bg-brand-light-green px-1 text-center text-[10px] font-bold leading-4 text-brand-green">
+                      {wishlist.count > 99 ? '99+' : wishlist.count}
+                    </span>
+                  ) : null}
+                </Link>
+                <Link href={loggedIn ? '/dashboard' : '/login'} aria-label="Akun" className="hidden md:inline-flex hover:opacity-70 transition-opacity text-brand-cream">
                   <UserIcon />
                 </Link>
                 <button type="button" aria-label="Keranjang belanja" className="relative hover:opacity-70 transition-opacity">
@@ -314,7 +336,7 @@ export default function Navbar() {
         </div>
       </header>
 
-      <MobileDrawer open={mobileOpen} onClose={() => setMobileOpen(false)} pathname={pathname} />
+      <MobileDrawer open={mobileOpen} onClose={() => setMobileOpen(false)} pathname={pathname} loggedIn={loggedIn} />
     </>
   );
 }

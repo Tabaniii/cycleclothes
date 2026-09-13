@@ -1,4 +1,5 @@
 import { Geist, Geist_Mono, Great_Vibes } from "next/font/google";
+import { WishlistProvider } from "@/components/WishlistProvider";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -32,7 +33,9 @@ export default function RootLayout({ children }) {
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} ${greatVibes.variable} min-h-dvh scroll-smooth antialiased bg-brand-green`}
     >
-      <body className="min-h-dvh flex flex-col bg-brand-green">{children}</body>
+      <body className="min-h-dvh flex flex-col bg-brand-green">
+        <WishlistProvider>{children}</WishlistProvider>
+      </body>
     </html>
   );
 }

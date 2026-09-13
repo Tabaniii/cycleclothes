@@ -1,24 +1,40 @@
 import { supabase } from '@/lib/supabase';
 import { getUserProfile } from '@/services/userService';
+import { authErrorMessage, isNetworkAuthError } from '@/lib/auth-errors';
 
-function isInvalidCredentialsError(error) {
-  const code = error?.code || error?.error_code;
-  const message = String(error?.message || '');
-  return code === 'invalid_credentials' || /invalid login credentials/i.test(message);
+async function applySession(session) {
+  if (!session?.access_token || !session?.refresh_token) return;
+  const { error } = await supabase.auth.setSession({
+    access_token: session.access_token,
+    refresh_token: session.refresh_token,
+  });
+  if (error) throw error;
 }
 
-async function isEmailRegistered(email) {
-  try {
-    const res = await fetch('/api/auth/account-status', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email }),
-    });
-    const body = await res.json().catch(() => ({}));
-    return Boolean(body.registered);
-  } catch {
-    return false;
+async function postAuth(path, payload) {
+  const res = await fetch(path, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+  });
+  const body = await res.json().catch(() => ({}));
+  if (!res.ok) {
+    throw new Error(body.error || authErrorMessage(new Error('Failed to fetch')));
   }
+  return body;
+}
+
+export async function signInWithGoogle() {
+  const redirectTo =
+    typeof window !== 'undefined'
+      ? `${window.location.origin}/auth/callback`
+      : 'http://localhost:3000/auth/callback';
+
+  const { error } = await supabase.auth.signInWithOAuth({
+    provider: 'google',
+    options: { redirectTo },
+  });
+  if (error) throw new Error(authErrorMessage(error));
 }
 
 export async function signInUser({ email, password }) {
@@ -26,22 +42,25 @@ export async function signInUser({ email, password }) {
     throw new Error('Email dan password harus diisi.');
   }
 
-  const { data, error } = await supabase.auth.signInWithPassword({
-    email,
-    password,
-  });
-
-  if (!error) return data;
-
-  if (isInvalidCredentialsError(error)) {
-    const registered = await isEmailRegistered(email);
-    if (!registered) {
-      throw new Error('Account is not available or not registered.');
+  try {
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+    if (error) throw error;
+    if (!data.session || !data.user) {
+      throw new Error('Login gagal. Periksa email dan password.');
     }
-    throw new Error('Invalid email or password.');
+    return {
+      user: { id: data.user.id, email: data.user.email },
+      session: data.session,
+    };
+  } catch (error) {
+    if (!isNetworkAuthError(error)) {
+      throw new Error(authErrorMessage(error));
+    }
   }
 
-  throw error;
+  const body = await postAuth('/api/auth/login', { email, password });
+  await applySession(body.session);
+  return body;
 }
 
 export async function signOutUser() {
@@ -86,23 +105,37 @@ export async function signUpUser({ email, password, fullName }) {
     throw new Error('Email, password, dan nama lengkap harus diisi.');
   }
 
-  const emailRedirectTo = typeof window !== 'undefined'
-    ? `${window.location.origin}/auth/verified`
-    : 'http://localhost:3000/auth/verified';
-
-  const { data, error } = await supabase.auth.signUp({
-    email,
-    password,
-    options: {
-      emailRedirectTo,
-      data: {
-        full_name: fullName,
+  try {
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        emailRedirectTo:
+          typeof window !== 'undefined'
+            ? `${window.location.origin}/auth/verified`
+            : 'http://localhost:3000/auth/verified',
+        data: { full_name: fullName },
       },
-    },
-  });
+    });
+    if (error) throw error;
+    if (!data.user) throw new Error('Pendaftaran gagal. Coba lagi.');
+    if (Array.isArray(data.user.identities) && data.user.identities.length === 0) {
+      throw new Error('Email sudah terdaftar. Silakan masuk.');
+    }
+    return {
+      user: { id: data.user.id, email: data.user.email },
+      session: data.session,
+      needsEmailConfirmation: !data.session,
+    };
+  } catch (error) {
+    if (!isNetworkAuthError(error)) {
+      throw new Error(authErrorMessage(error));
+    }
+  }
 
-  if (error) throw error;
-  return data;
+  const body = await postAuth('/api/auth/register', { email, password, fullName });
+  await applySession(body.session);
+  return body;
 }
 
 export async function getCurrentAuthUserWithProfile() {
@@ -138,7 +171,7 @@ export async function sendResetPasswordEmail(email) {
     redirectTo,
   });
 
-  if (error) throw error;
+  if (error) throw new Error(authErrorMessage(error));
   return data;
 }
 
@@ -151,6 +184,6 @@ export async function updatePassword(newPassword) {
     password: newPassword,
   });
 
-  if (error) throw error;
+  if (error) throw new Error(authErrorMessage(error));
   return data;
 }

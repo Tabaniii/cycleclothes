@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import AuthBackendStatus from '@/components/AuthBackendStatus';
 import { signUpUser } from '@/services/authService';
 
 export default function RegisterPage() {
@@ -60,6 +61,8 @@ export default function RegisterPage() {
                 Bergabung bersama Cycle Clothes hari ini
               </p>
             </div>
+
+            <AuthBackendStatus />
 
             {isSuccess && (
               <div className="mb-6 p-4 bg-emerald-50 border border-emerald-200 rounded-lg">
@@ -157,6 +160,20 @@ export default function RegisterPage() {
             )}
 
             <div className="mt-8 text-center">
+              <button
+                type="button"
+                onClick={async () => {
+                  try {
+                    const { signInWithGoogle } = await import('@/services/authService');
+                    await signInWithGoogle();
+                  } catch (err) {
+                    setError(err.message || 'Gagal daftar dengan Google.');
+                  }
+                }}
+                className="mb-4 w-full border border-brand-green/20 bg-white text-brand-green font-semibold py-3 px-4 rounded-lg hover:bg-brand-cream transition-all"
+              >
+                Lanjut dengan Google
+              </button>
               <p className="text-gray-600">
                 Sudah punya akun?{' '}
                 <Link href="/login" className="font-semibold text-brand-green hover:underline">

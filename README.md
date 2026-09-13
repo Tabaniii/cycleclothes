@@ -1,36 +1,29 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Cycle Clothes
 
-## Getting Started
+Platform preloved + donasi langsung ke yayasan (PRD v2). Stack: Next.js App Router, Supabase, Stripe sandbox, Tailwind.
 
-First, run the development server:
+## Setup lokal
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+1. Salin `.env.example` ke `.env.local` lalu isi kunci Supabase/Stripe.
+2. Jalankan migrasi `supabase/migrations/0001_*.sql` sampai `0006_*.sql` di proyek Supabase. `0006` wajib jika register/login error setelah v2 — memperbaiki trigger `profiles`.
+3. Aktifkan Google OAuth di Supabase Auth (redirect: `{origin}/auth/callback`).
+4. Stripe: webhook endpoint `https://<domain>/api/stripe/webhook` untuk `payment_intent.succeeded`.
+5. `npm install` lalu `npm run dev`.
+6. Seed data uji: `npm run seed` (butuh `SUPABASE_SERVICE_ROLE_KEY`).
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Akun seed default (password `CycleClothes123!`):
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+- `admin@cycleclothes.local`
+- `yayasan@cycleclothes.local`
+- `donor@cycleclothes.local`
+- `seller@cycleclothes.local`
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Cron
 
-## Learn More
+Klaim `pending` > 3 hari di-expire oleh `private.expire_stale_donation_claims` (pg_cron jika tersedia) dan `/api/cron/expire-claims` (Vercel Cron + `CRON_SECRET`).
 
-To learn more about Next.js, take a look at the following resources:
+## Asumsi
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- Mata uang Stripe sandbox: **IDR** (zero-decimal).
+- Role otorisasi diambil dari `profiles.role`, bukan `user_metadata` JWT.
+- Kit UI mengikuti pola shadcn (CVA + token brand di `design.md`), tanpa CLI shadcn penuh.

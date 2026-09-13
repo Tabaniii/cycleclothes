@@ -1,7 +1,7 @@
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import ContactSection from '@/components/ContactSection';
-import TeamGallery from '@/components/TeamGallery';
+// import TeamGallery from '@/components/TeamGallery';
 
 export const metadata = {
   title: 'About | Cycle Clothes',
@@ -79,7 +79,7 @@ export default function AboutPage() {
           </div>
         </section>
 
-        <section className="bg-brand-cream-light overflow-hidden">
+        {/* <section className="bg-brand-cream-light overflow-hidden">
           <div className="mx-auto max-w-7xl px-6 sm:px-8 lg:px-12 pt-14 sm:pt-16">
             <div className="text-center max-w-2xl mx-auto mb-6 sm:mb-8">
               <h2 className="text-2xl sm:text-3xl font-bold text-brand-blue">
@@ -91,7 +91,7 @@ export default function AboutPage() {
             </div>
           </div>
           <TeamGallery />
-        </section>
+        </section> */}
         <ContactSection />
       </main>
 

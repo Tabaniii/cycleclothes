@@ -113,6 +113,19 @@ export type Message = {
   profiles?: Pick<Profile, 'full_name' | 'avatar_url' | 'badge_status'> | null;
 };
 
+export type ChatConversation = {
+  listingId: string;
+  peerId: string;
+  peerName: string | null;
+  peerBadge: string | null;
+  listingTitle: string;
+  listingImage: string | null;
+  listingPrice: number | string;
+  listingStatus: ListingStatus;
+  lastMessage: string;
+  lastMessageAt: string;
+};
+
 export type Review = {
   id: string;
   order_id: string;

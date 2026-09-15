@@ -2,6 +2,7 @@ import Stripe from 'stripe';
 import { getStripe, getStripeWebhookSecret } from '@/lib/stripe';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { jsonOk, jsonError } from '@/lib/api/http';
+import { fulfillPaidOrderFromPaymentIntent } from '@/lib/orders/stripe-fulfill';
 
 export const runtime = 'nodejs';
 
@@ -37,26 +38,7 @@ export async function POST(request: Request) {
   try {
     if (event.type === 'payment_intent.succeeded') {
       const intent = event.data.object as Stripe.PaymentIntent;
-      const orderId = intent.metadata?.order_id;
-      const query = orderId
-        ? admin.from('orders').select('*').eq('id', orderId)
-        : admin.from('orders').select('*').eq('stripe_payment_intent_id', intent.id);
-      const { data: order, error } = await query.maybeSingle();
-      if (error) throw error;
-      if (order && order.status === 'pending') {
-        await admin
-          .from('orders')
-          .update({ status: 'paid', stripe_payment_intent_id: intent.id })
-          .eq('id', order.id);
-        await admin.from('listings').update({ status: 'reserved' }).eq('id', order.listing_id);
-        await admin.from('audit_logs').insert({
-          actor_id: order.buyer_id,
-          action: 'order.paid',
-          entity_type: 'orders',
-          entity_id: order.id,
-          metadata: { stripe_event_id: event.id, payment_intent_id: intent.id },
-        });
-      }
+      await fulfillPaidOrderFromPaymentIntent(intent);
     }
 
     if (event.type === 'payment_intent.payment_failed') {

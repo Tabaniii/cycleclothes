@@ -20,13 +20,27 @@ function PayForm({ orderId }: { orderId: string }) {
   async function pay() {
     if (!stripe || !elements) return;
     setBusy(true);
-    const { error } = await stripe.confirmPayment({
+    const { error, paymentIntent } = await stripe.confirmPayment({
       elements,
       confirmParams: {
         return_url: `${window.location.origin}/dashboard/orders?paid=${orderId}`,
       },
+      redirect: 'if_required',
     });
-    if (error) setMessage(error.message || 'Pembayaran gagal.');
+    if (error) {
+      setMessage(error.message || 'Pembayaran gagal.');
+      setBusy(false);
+      return;
+    }
+    if (paymentIntent?.status === 'succeeded') {
+      try {
+        await apiFetch(`/api/orders/${orderId}/confirm-payment`, { method: 'POST' });
+      } catch {
+        // Status tetap disinkronkan saat halaman pesanan terbuka.
+      }
+      window.location.assign(`/dashboard/orders?paid=${orderId}`);
+      return;
+    }
     setBusy(false);
   }
 
@@ -81,6 +95,11 @@ export default function CheckoutPage() {
             <p className="text-brand-green">{order.listings?.title}</p>
             <p className="text-xl font-semibold">{formatIdr(order.amount)}</p>
             <OrderStatusTimeline status={order.status} />
+            {order.status === 'paid' ? (
+              <p className="rounded-lg bg-emerald-50 p-4 text-sm text-emerald-800">
+                Pembayaran sudah masuk. Tunggu penjual kirim, atau buka halaman pesanan untuk langkah berikutnya.
+              </p>
+            ) : null}
           </>
         ) : (
           <p>Menyiapkan pesanan...</p>
@@ -90,7 +109,9 @@ export default function CheckoutPage() {
             Stripe publishable key belum di-set. Tambahkan NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY untuk sandbox checkout.
           </p>
         ) : null}
-        {stripePromise && clientSecret ? (
+        {order && order.status !== 'pending' ? (
+          <Button onClick={() => (window.location.href = '/dashboard/orders')}>Lihat pesanan</Button>
+        ) : stripePromise && clientSecret ? (
           <Elements stripe={stripePromise} options={{ clientSecret }}>
             <PayForm orderId={params.orderId} />
           </Elements>

@@ -52,15 +52,28 @@ export async function POST(request: Request) {
     }
 
     const stripe = getStripe();
+    const stripeAmount = toStripeAmountIdr(amount);
     let paymentIntentId = order.stripe_payment_intent_id as string | null;
     let clientSecret: string | null = null;
+    const updatableStatuses = new Set(['requires_payment_method', 'requires_confirmation', 'requires_action']);
 
     if (paymentIntentId) {
       const existingIntent = await stripe.paymentIntents.retrieve(paymentIntentId);
-      clientSecret = existingIntent.client_secret;
-    } else {
+      if (updatableStatuses.has(existingIntent.status)) {
+        if (existingIntent.amount !== stripeAmount) {
+          const updated = await stripe.paymentIntents.update(paymentIntentId, { amount: stripeAmount });
+          clientSecret = updated.client_secret;
+        } else {
+          clientSecret = existingIntent.client_secret;
+        }
+      } else {
+        paymentIntentId = null;
+      }
+    }
+
+    if (!paymentIntentId) {
       const paymentIntent = await stripe.paymentIntents.create({
-        amount: toStripeAmountIdr(amount),
+        amount: stripeAmount,
         currency: STRIPE_CURRENCY,
         automatic_payment_methods: { enabled: true },
         metadata: {

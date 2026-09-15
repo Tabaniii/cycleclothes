@@ -22,6 +22,11 @@ export function getStripeWebhookSecret() {
 }
 
 export function toStripeAmountIdr(amount: number) {
-  // Assumption: IDR is a zero-decimal Stripe currency.
-  return Math.round(amount);
+  // Stripe treats IDR as a two-decimal currency (minor unit = sen).
+  // Listings store whole rupiah: 50000 => Rp50.000 => Stripe amount 5_000_000.
+  const value = Number(amount);
+  if (!Number.isFinite(value) || value < 0) {
+    throw new Error('Harga listing tidak valid.');
+  }
+  return Math.round(value * 100);
 }

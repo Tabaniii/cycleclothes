@@ -32,6 +32,14 @@ function UserIcon({ className = 'h-6 w-6' }) {
   );
 }
 
+function ChatIcon({ className = 'h-6 w-6' }) {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" className={className} aria-hidden="true">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 6.75A2.25 2.25 0 0 1 6.75 4.5h10.5A2.25 2.25 0 0 1 19.5 6.75v6A2.25 2.25 0 0 1 17.25 15H12l-4.5 3.75V15H6.75A2.25 2.25 0 0 1 4.5 12.75v-6Z" />
+    </svg>
+  );
+}
+
 function HeartIcon({ className = 'h-6 w-6' }) {
   return (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" className={className} fill="currentColor" aria-hidden="true">
@@ -223,12 +231,18 @@ function MobileDrawer({ open, onClose, pathname, loggedIn }) {
             icon={<DonateIcon className="h-6 w-6" />}
           />
         </div>
-        <div className="grid grid-cols-2 divide-x divide-brand-green/15 border-b border-brand-green/15">
+        <div className="grid grid-cols-3 divide-x divide-brand-green/15 border-b border-brand-green/15">
           <QuickAction
             href="/preloved"
             label="Preloved"
             onClick={onClose}
             icon={<BagIcon className="h-6 w-6" />}
+          />
+          <QuickAction
+            href={loggedIn ? '/chat' : '/login'}
+            label="Chat"
+            onClick={onClose}
+            icon={<ChatIcon className="h-6 w-6" />}
           />
           <QuickAction
             href="/about#contact"
@@ -303,6 +317,14 @@ export default function Navbar() {
                 <button type="button" aria-label="Cari" className="hidden md:inline-flex hover:opacity-70 transition-opacity">
                   <NavIcon src="/incons/search.svg" alt="" />
                 </button>
+                <Link
+                  href={loggedIn ? '/chat' : '/login'}
+                  aria-label="Chat"
+                  aria-current={isActivePath(pathname, '/chat') ? 'page' : undefined}
+                  className="hover:opacity-70 transition-opacity text-brand-cream"
+                >
+                  <ChatIcon className="h-6 w-6" />
+                </Link>
                 <Link
                   href={loggedIn ? '/wishlist' : '/login'}
                   aria-label="Wishlist"

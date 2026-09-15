@@ -3,6 +3,8 @@ import { handleRouteError, jsonOk } from '@/lib/api/http';
 import { asString, HttpError } from '@/lib/validations';
 import { decodeCursor, nextCursorFromRows } from '@/lib/pagination';
 import { PAGE_SIZE } from '@/lib/constants';
+import { syncPendingOrdersFromStripe } from '@/lib/orders/stripe-fulfill';
+import type { Order } from '@/types/database';
 
 export async function GET(request: Request) {
   try {
@@ -24,7 +26,8 @@ export async function GET(request: Request) {
 
     const { data, error } = await query;
     if (error) throw new HttpError(400, error.message);
-    return jsonOk(nextCursorFromRows(data || [], limit));
+    const synced = await syncPendingOrdersFromStripe((data || []) as Order[]);
+    return jsonOk(nextCursorFromRows(synced, limit));
   } catch (error) {
     return handleRouteError(error);
   }

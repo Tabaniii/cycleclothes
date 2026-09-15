@@ -24,6 +24,6 @@ Klaim `pending` > 3 hari di-expire oleh `private.expire_stale_donation_claims` (
 
 ## Asumsi
 
-- Mata uang Stripe sandbox: **IDR** (zero-decimal).
+- Mata uang Stripe sandbox: **IDR** (two-decimal di API Stripe; kirim `harga_rupiah * 100`).
 - Role otorisasi diambil dari `profiles.role`, bukan `user_metadata` JWT.
 - Kit UI mengikuti pola shadcn (CVA + token brand di `design.md`), tanpa CLI shadcn penuh.

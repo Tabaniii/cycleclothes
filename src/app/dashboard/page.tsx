@@ -211,11 +211,16 @@ export default function DashboardPage() {
           </div>
         </section>
 
-        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           <Link href="#jual-preloved" className="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-brand-green/10">
             <p className="text-xs uppercase tracking-wide text-brand-green/50">Preloved</p>
             <p className="mt-1 text-lg font-semibold text-brand-green">Jual dari lemari</p>
             <p className="mt-1 text-sm text-brand-green/70">Foto, harga, lalu umuman. Pembeli bayar lewat Stripe.</p>
+          </Link>
+          <Link href="/chat" className="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-brand-green/10">
+            <p className="text-xs uppercase tracking-wide text-brand-green/50">Pesan</p>
+            <p className="mt-1 text-lg font-semibold text-brand-green">Chat pembeli & penjual</p>
+            <p className="mt-1 text-sm text-brand-green/70">Tanya stok, nego harga, tanpa menempel di halaman produk.</p>
           </Link>
           <Link href="/wishlist" className="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-brand-green/10">
             <p className="text-xs uppercase tracking-wide text-brand-green/50">Wishlist</p>
@@ -344,7 +349,15 @@ export default function DashboardPage() {
                         <li key={order.id} className="rounded-lg bg-brand-cream/50 px-3 py-2 text-sm text-brand-green">
                           <p className="font-semibold">{order.listings?.title || 'Pesanan'}</p>
                           <p className="text-brand-green/70">
-                            {formatIdr(order.amount)} · {order.status}
+                            {formatIdr(order.amount)} ·{' '}
+                            {{
+                              pending: 'Menunggu bayar',
+                              paid: 'Sudah dibayar',
+                              shipped: 'Dikirim',
+                              completed: 'Selesai',
+                              disputed: 'Sengketa',
+                              refunded: 'Dikembalikan',
+                            }[order.status] || order.status}
                           </p>
                         </li>
                       ))}
@@ -444,6 +457,9 @@ export default function DashboardPage() {
                       <>
                         <Link href={`/u/${profile.id}`}>
                           <Button variant="ghost">Lihat profil publik</Button>
+                        </Link>
+                        <Link href="/chat">
+                          <Button variant="ghost">Chat</Button>
                         </Link>
                         <Link href="/wishlist">
                           <Button variant="ghost">Wishlist saya</Button>

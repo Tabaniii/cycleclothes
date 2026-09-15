@@ -151,26 +151,6 @@ export default function LoginPage() {
               </button>
             </form>
 
-            <div className="mt-6">
-              <button
-                type="button"
-                onClick={async () => {
-                  setIsLoading(true);
-                  setError('');
-                  try {
-                    const { signInWithGoogle } = await import('@/services/authService');
-                    await signInWithGoogle();
-                  } catch (err) {
-                    setError(err.message || 'Gagal masuk dengan Google.');
-                    setIsLoading(false);
-                  }
-                }}
-                className="w-full border border-brand-green/20 bg-white text-brand-green font-semibold py-3 px-4 rounded-lg hover:bg-brand-cream transition-all"
-              >
-                Masuk dengan Google
-              </button>
-            </div>
-
             {/* Register Link */}
             <div className="mt-8 text-center">
               <p className="text-gray-600">

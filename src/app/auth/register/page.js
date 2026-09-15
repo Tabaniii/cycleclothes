@@ -10,6 +10,7 @@ export default function RegisterPage() {
     fullName: '',
     email: '',
     password: '',
+    confirmPassword: '',
   });
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
@@ -25,6 +26,12 @@ export default function RegisterPage() {
     setIsLoading(true);
     setError('');
     setIsSuccess(false);
+
+    if (formData.password !== formData.confirmPassword) {
+      setError('Password dan Konfirmasi Password tidak sama.');
+      setIsLoading(false);
+      return;
+    }
 
     try {
       await signUpUser({
@@ -139,6 +146,23 @@ export default function RegisterPage() {
                   />
                 </div>
 
+                <div>
+                  <label htmlFor="password" className="block text-sm font-medium text-black mb-2">
+                    Konfirmasi Password
+                  </label>
+                  <input
+                    type="password"
+                    id="confirmPassword"
+                    name="confirmPassword"
+                    value={formData.confirmPassword}
+                    onChange={handleChange}
+                    required
+                    minLength={6}
+                    placeholder="Minimal 6 karakter..."
+                    className="text-black w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-light-green focus:border-brand-light-green outline-none transition-colors"
+                  />
+                </div>
+
                 <button
                   type="submit"
                   disabled={isLoading}
@@ -160,20 +184,6 @@ export default function RegisterPage() {
             )}
 
             <div className="mt-8 text-center">
-              <button
-                type="button"
-                onClick={async () => {
-                  try {
-                    const { signInWithGoogle } = await import('@/services/authService');
-                    await signInWithGoogle();
-                  } catch (err) {
-                    setError(err.message || 'Gagal daftar dengan Google.');
-                  }
-                }}
-                className="mb-4 w-full border border-brand-green/20 bg-white text-brand-green font-semibold py-3 px-4 rounded-lg hover:bg-brand-cream transition-all"
-              >
-                Lanjut dengan Google
-              </button>
               <p className="text-gray-600">
                 Sudah punya akun?{' '}
                 <Link href="/login" className="font-semibold text-brand-green hover:underline">

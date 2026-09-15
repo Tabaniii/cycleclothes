@@ -4,10 +4,10 @@ import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { useParams, useRouter } from 'next/navigation';
 import { PageShell } from '@/components/PageShell';
-import { ChatThread } from '@/components/ChatThread';
 import { UserBadgePill } from '@/components/UserBadgePill';
 import { Button } from '@/components/ui/button';
 import { WishlistButton } from '@/components/WishlistButton';
+import { ChatThread } from '@/components/ChatThread';
 import { formatIdr } from '@/lib/utils';
 import { productImageUrl } from '@/lib/storage';
 import { apiFetch } from '@/lib/api/client';
@@ -102,21 +102,15 @@ export default function ListingDetailPage() {
             )}
             {!isSeller ? <WishlistButton listingId={listing.id} /> : null}
           </div>
-          {userId ? (
+          {!isSeller ? (
             <ChatThread
+              variant="starter"
               listingId={listing.id}
               currentUserId={userId}
-              peerName={isSeller ? 'Pembeli' : listing.profiles?.full_name || 'Penjual'}
-              peerBadge={listing.profiles?.badge_status}
+              listingPrice={listing.price}
+              listingStatus={listing.status}
             />
-          ) : (
-            <p className="text-sm">
-              <a className="underline" href="/login">
-                Masuk
-              </a>{' '}
-              untuk chat dengan penjual.
-            </p>
-          )}
+          ) : null}
         </div>
       </div>
     </PageShell>

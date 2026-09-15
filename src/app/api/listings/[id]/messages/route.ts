@@ -10,8 +10,9 @@ export async function GET(request: Request, { params }: Params) {
   try {
     const { id } = await params;
     assertUuid(id);
-    const { supabase } = await getRequestUser(request);
+    const { supabase, user } = await getRequestUser(request);
     const url = new URL(request.url);
+    const peerId = asString(url.searchParams.get('peer_id'));
     const cursor = decodeCursor(url.searchParams.get('cursor'));
     const limit = Math.min(Number(url.searchParams.get('limit') || MESSAGE_PAGE_SIZE) || MESSAGE_PAGE_SIZE, 100);
 
@@ -22,6 +23,15 @@ export async function GET(request: Request, { params }: Params) {
       .order('created_at', { ascending: true })
       .order('id', { ascending: true })
       .limit(limit + 1);
+
+    if (peerId) {
+      assertUuid(peerId, 'peer_id');
+      query = query.or(
+        `and(sender_id.eq.${user.id},receiver_id.eq.${peerId}),and(sender_id.eq.${peerId},receiver_id.eq.${user.id})`,
+      );
+    } else {
+      query = query.or(`sender_id.eq.${user.id},receiver_id.eq.${user.id}`);
+    }
 
     if (cursor) query = query.gt('created_at', cursor.createdAt);
 

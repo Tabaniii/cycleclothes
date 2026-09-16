@@ -1,6 +1,7 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { PageShell } from '@/components/PageShell';
 import { WishlistCard } from '@/components/WishlistCard';
 import { Input } from '@/components/ui/input';
@@ -9,23 +10,24 @@ import { Button } from '@/components/ui/button';
 import { CLOTHING_CATEGORIES } from '@/lib/constants';
 import type { DonationWishlist, Paginated } from '@/types/database';
 
-export default function DonasiPage() {
+function DonasiPageInner() {
+  const searchParams = useSearchParams();
   const [items, setItems] = useState<DonationWishlist[]>([]);
   const [cursor, setCursor] = useState<string | null>(null);
   const [hasMore, setHasMore] = useState(false);
   const [category, setCategory] = useState('');
   const [status, setStatus] = useState('open');
-  const [q, setQ] = useState('');
+  const [q, setQ] = useState(() => searchParams.get('q') || '');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
-  async function load(reset = false) {
+  async function load(reset = false, query = q) {
     setLoading(true);
     setError('');
     try {
       const params = new URLSearchParams({ status, limit: '12' });
       if (category) params.set('category', category);
-      if (q) params.set('q', q);
+      if (query) params.set('q', query);
       if (!reset && cursor) params.set('cursor', cursor);
       const res = await fetch(`/api/wishlists?${params.toString()}`);
       const body = (await res.json()) as Paginated<DonationWishlist> & { error?: string };
@@ -41,10 +43,12 @@ export default function DonasiPage() {
   }
 
   useEffect(() => {
+    const nextQuery = searchParams.get('q') || '';
+    setQ(nextQuery);
     setCursor(null);
-    load(true);
+    load(true, nextQuery);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [category, status]);
+  }, [category, status, searchParams]);
 
   return (
     <PageShell className="bg-brand-cream">
@@ -96,5 +100,21 @@ export default function DonasiPage() {
         ) : null}
       </div>
     </PageShell>
+  );
+}
+
+export default function DonasiPage() {
+  return (
+    <Suspense
+      fallback={
+        <PageShell className="bg-brand-cream">
+          <div className="mx-auto max-w-7xl px-6 py-10 sm:px-8">
+            <p className="text-sm text-brand-green/70">Memuat...</p>
+          </div>
+        </PageShell>
+      }
+    >
+      <DonasiPageInner />
+    </Suspense>
   );
 }

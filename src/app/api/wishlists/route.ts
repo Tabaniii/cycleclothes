@@ -23,37 +23,57 @@ export async function GET(request: Request) {
     const cursor = decodeCursor(url.searchParams.get('cursor'));
     const limit = Math.min(asPositiveInt(url.searchParams.get('limit') || PAGE_SIZE, PAGE_SIZE), 50);
 
+    const sort = asString(url.searchParams.get('sort')) || 'newest';
+    const ascending = sort === 'oldest';
+    const wishlistSelect =
+      '*, profiles!donation_wishlists_foundation_id_fkey(full_name, avatar_url, city, badge_status)';
+
     let query = publicSupabase()
       .from('donation_wishlists')
-      .select(
-        '*, profiles!donation_wishlists_foundation_id_fkey(full_name, avatar_url, city, badge_status, foundation_profiles(legal_name, verification_status))',
-      )
-      .order('created_at', { ascending: false })
-      .order('id', { ascending: false })
+      .select(wishlistSelect)
+      .order('created_at', { ascending })
+      .order('id', { ascending })
       .limit(limit + 1);
 
     if (mine) {
       const { supabase, user } = await getRequestUser(request);
       query = supabase
         .from('donation_wishlists')
-        .select(
-          '*, profiles!donation_wishlists_foundation_id_fkey(full_name, avatar_url, city, badge_status, foundation_profiles(legal_name, verification_status))',
-        )
+        .select(wishlistSelect)
         .eq('foundation_id', user.id)
-        .order('created_at', { ascending: false })
-        .order('id', { ascending: false })
+        .order('created_at', { ascending })
+        .order('id', { ascending })
         .limit(limit + 1);
     }
 
     if (status) query = query.eq('status', status);
     if (category) query = query.eq('category', category);
     if (q) query = query.ilike('title', `%${q}%`);
-    if (cursor) query = query.lt('created_at', cursor.createdAt);
+    if (cursor) {
+      query = ascending ? query.gt('created_at', cursor.createdAt) : query.lt('created_at', cursor.createdAt);
+    }
 
     const { data, error } = await query;
     if (error) throw new HttpError(400, error.message);
 
-    return jsonOk(nextCursorFromRows(data || [], limit));
+    const rows = data || [];
+    const foundationIds = [...new Set(rows.map((row) => row.foundation_id).filter(Boolean))];
+    let foundationsById: Record<string, { legal_name: string; verification_status: string; address: string | null; pic_phone: string | null }> = {};
+
+    if (foundationIds.length > 0) {
+      const { data: foundations } = await publicSupabase()
+        .from('foundation_profiles')
+        .select('id, legal_name, verification_status, address, pic_phone')
+        .in('id', foundationIds);
+      foundationsById = Object.fromEntries((foundations || []).map((item) => [item.id, item]));
+    }
+
+    const merged = rows.map((row) => ({
+      ...row,
+      foundation_profiles: foundationsById[row.foundation_id] || null,
+    }));
+
+    return jsonOk(nextCursorFromRows(merged, limit));
   } catch (error) {
     return handleRouteError(error);
   }

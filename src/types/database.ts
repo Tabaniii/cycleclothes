@@ -49,7 +49,10 @@ export type DonationWishlist = {
   status: WishlistStatus;
   created_at: string;
   updated_at: string;
-  foundation_profiles?: Pick<FoundationProfile, 'legal_name' | 'verification_status'> | null;
+  foundation_profiles?: Pick<
+    FoundationProfile,
+    'legal_name' | 'verification_status' | 'address' | 'pic_phone'
+  > | null;
   profiles?: Pick<Profile, 'full_name' | 'avatar_url' | 'city' | 'badge_status'> | null;
 };
 

@@ -3,22 +3,23 @@ import Link from 'next/link';
 import type { DonationWishlist } from '@/types/database';
 import { ClothesRack } from '@/components/home/ClothesRack';
 import { HomeSearch } from '@/components/home/HomeSearch';
+import { DropoffMapLoader } from '@/components/home/DropoffMapLoader';
 
 const FAST_FASHION = [
   {
     title: 'The Cost',
     body: 'Understanding the environmental toll of mass production.',
-    icon: 'factory' as const,
+    icon: '/assets/icons/factory.svg',
   },
   {
     title: 'The Standard',
     body: 'Where do discarded garments really end up?',
-    icon: 'seal' as const,
+    icon: '/assets/icons/verified.svg',
   },
   {
     title: 'The Waste',
     body: 'Certifications and materials that matter.',
-    icon: 'recycle' as const,
+    icon: '/assets/icons/recycling.svg',
   },
 ];
 
@@ -27,33 +28,6 @@ const FALLBACK_CAMPAIGNS = [
   { title: 'Bantuan orang kebanjiran', meta: 'Terkumpul  ·  USD 100', href: '/donasi' },
   { title: 'Bantuan orang kebanjiran', meta: 'Terkumpul  ·  USD 100', href: '/donasi' },
 ];
-
-function FastFashionIcon({ name }: { name: (typeof FAST_FASHION)[number]['icon'] }) {
-  const common = 'h-10 w-10 stroke-brand-green';
-  if (name === 'factory') {
-    return (
-      <svg viewBox="0 0 32 32" fill="none" className={common} strokeWidth="1.7">
-        <path d="M4 28V14l6 4V14l6 4V8h4v6h8v14H4Z" />
-        <path d="M8 28v-4h4v4M16 28v-4h4v4M24 28v-4h4v4" />
-      </svg>
-    );
-  }
-  if (name === 'seal') {
-    return (
-      <svg viewBox="0 0 32 32" fill="none" className={common} strokeWidth="1.7">
-        <path d="M16 4l2.4 4.8 5.4.8-3.9 3.8.9 5.4L16 16.6 11.2 19l.9-5.4-3.9-3.8 5.4-.8L16 4Z" />
-        <circle cx="16" cy="16" r="10" />
-      </svg>
-    );
-  }
-  return (
-    <svg viewBox="0 0 32 32" fill="none" className={common} strokeWidth="1.7">
-      <path d="M7 18a9 9 0 0 1 15.5-6.4" strokeLinecap="round" />
-      <path d="M25 14a9 9 0 0 1-15.6 6.5" strokeLinecap="round" />
-      <path d="M22 6v6h6M10 26v-6H4" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  );
-}
 
 export function HomeLanding({ campaigns }: { campaigns: DonationWishlist[] }) {
   const cards =
@@ -99,7 +73,8 @@ export function HomeLanding({ campaigns }: { campaigns: DonationWishlist[] }) {
               className="flex min-h-[30rem] flex-col rounded-[1.75rem] bg-brand-light-green px-6 pb-8 pt-8 text-brand-green sm:min-h-[32rem]"
             >
               <div className="flex flex-col items-center text-center">
-                <FastFashionIcon name={item.icon} />
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={item.icon} alt="" className="h-10 w-10" />
                 <h3 className="mt-4 text-sm font-extrabold uppercase tracking-[0.14em]">{item.title}</h3>
                 <p className="mt-2 max-w-[16rem] text-xs leading-relaxed text-brand-green/80">{item.body}</p>
               </div>
@@ -174,19 +149,7 @@ export function HomeLanding({ campaigns }: { campaigns: DonationWishlist[] }) {
           </Link>
 
           <div className="relative isolate min-h-[22rem] overflow-hidden rounded-[1.75rem] bg-brand-light-green">
-            <p className="absolute left-1/2 top-[42%] -translate-x-1/2 -translate-y-1/2 text-xs text-brand-green/45">
-              (google maps)
-            </p>
-            <div className="absolute bottom-6 left-6 text-brand-green">
-              <p className="flex items-start gap-2 text-sm font-semibold">
-                <svg viewBox="0 0 24 24" className="mt-0.5 h-5 w-5 shrink-0" fill="currentColor" aria-hidden>
-                  <path d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7Zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5Z" />
-                </svg>
-                Nearest Drop-off
-              </p>
-              <p className="mt-1 pl-7 text-xs text-brand-green/80">Central Hall, Sudirman</p>
-              <p className="pl-7 text-xs text-brand-green/65">Open until 18:00</p>
-            </div>
+            <DropoffMapLoader />
           </div>
         </div>
       </section>

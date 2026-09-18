@@ -16,13 +16,20 @@ export async function GET(_request: Request, { params }: Params) {
     const { data, error } = await supabase
       .from('donation_wishlists')
       .select(
-        '*, profiles!donation_wishlists_foundation_id_fkey(full_name, avatar_url, city, badge_status, foundation_profiles(legal_name, verification_status, address))',
+        '*, profiles!donation_wishlists_foundation_id_fkey(full_name, avatar_url, city, badge_status)',
       )
       .eq('id', id)
       .maybeSingle();
     if (error) throw new HttpError(400, error.message);
     if (!data) throw new HttpError(404, 'Wishlist tidak ditemukan.');
-    return jsonOk({ wishlist: data });
+
+    const { data: foundation } = await supabase
+      .from('foundation_profiles')
+      .select('legal_name, verification_status, address, pic_phone')
+      .eq('id', data.foundation_id)
+      .maybeSingle();
+
+    return jsonOk({ wishlist: { ...data, foundation_profiles: foundation || null } });
   } catch (error) {
     return handleRouteError(error);
   }

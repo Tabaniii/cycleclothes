@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import type { DonationWishlist } from '@/types/database';
-import { ClothesRack } from '@/components/home/ClothesRack';
+import { HeroSection } from '@/components/home/HeroSection';
 import { HomeSearch } from '@/components/home/HomeSearch';
 import { DropoffMapLoader } from '@/components/home/DropoffMapLoader';
 
@@ -45,22 +45,7 @@ export function HomeLanding({ campaigns }: { campaigns: DonationWishlist[] }) {
 
   return (
     <div className="bg-brand-green text-brand-cream">
-      <section className="mx-auto grid max-w-6xl items-center gap-8 px-6 pb-6 pt-10 sm:px-8 md:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)] md:gap-4 lg:px-10 lg:pt-12">
-        <div>
-          <h1 className="max-w-xl text-[2.6rem] font-extrabold uppercase leading-[0.95] tracking-tight sm:text-5xl lg:text-[3.35rem]">
-            Semua berawal
-            <br />
-            dari lemarimu
-          </h1>
-          <Link
-            href="#about-fast-fashion"
-            className="mt-8 inline-flex items-center rounded-full border border-brand-cream/80 px-5 py-2 text-sm font-semibold text-brand-cream transition-colors hover:bg-brand-cream hover:text-brand-green"
-          >
-            Jelajahi →
-          </Link>
-        </div>
-        <ClothesRack className="mx-auto w-full max-w-xl text-brand-cream" />
-      </section>
+      <HeroSection />
 
       <section id="about-fast-fashion" className="scroll-mt-28 mx-auto max-w-6xl px-6 pb-14 pt-4 sm:px-8 lg:px-10">
         <h2 className="text-center text-3xl font-extrabold uppercase tracking-wide sm:text-4xl lg:text-5xl">

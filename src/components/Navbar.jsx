@@ -211,46 +211,85 @@ function MobileDrawer({ open, onClose, pathname, loggedIn }) {
           </button>
         </div>
 
-        <div className="grid grid-cols-3 divide-x divide-brand-green/15 border-b border-brand-green/15">
-          <QuickAction
-            href={loggedIn ? '/dashboard' : '/login'}
-            label={loggedIn ? 'Akun' : 'Masuk'}
-            onClick={onClose}
-            icon={<UserIcon className="h-6 w-6" />}
-          />
-          <QuickAction
-            href={loggedIn ? '/wishlist' : '/login'}
-            label="Wishlist"
-            onClick={onClose}
-            icon={<HeartIcon className="h-6 w-6" />}
-          />
-          <QuickAction
-            href="/donasi"
-            label="Donasi"
-            onClick={onClose}
-            icon={<DonateIcon className="h-6 w-6" />}
-          />
-        </div>
-        <div className="grid grid-cols-3 divide-x divide-brand-green/15 border-b border-brand-green/15">
-          <QuickAction
-            href="/preloved"
-            label="Preloved"
-            onClick={onClose}
-            icon={<BagIcon className="h-6 w-6" />}
-          />
-          <QuickAction
-            href={loggedIn ? '/chat' : '/login'}
-            label="Chat"
-            onClick={onClose}
-            icon={<ChatIcon className="h-6 w-6" />}
-          />
-          <QuickAction
-            href="/about#contact"
-            label="Kontak"
-            onClick={onClose}
-            icon={<PhoneIcon className="h-6 w-6" />}
-          />
-        </div>
+        {loggedIn ? (
+          <>
+            <div className="grid grid-cols-3 divide-x divide-brand-green/15 border-b border-brand-green/15">
+              <QuickAction
+                href="/dashboard"
+                label="Akun"
+                onClick={onClose}
+                icon={<UserIcon className="h-6 w-6" />}
+              />
+              <QuickAction
+                href="/wishlist"
+                label="Wishlist"
+                onClick={onClose}
+                icon={<HeartIcon className="h-6 w-6" />}
+              />
+              <QuickAction
+                href="/chat"
+                label="Chat"
+                onClick={onClose}
+                icon={<ChatIcon className="h-6 w-6" />}
+              />
+            </div>
+            <div className="grid grid-cols-3 divide-x divide-brand-green/15 border-b border-brand-green/15">
+              <QuickAction
+                href="/donasi"
+                label="Donasi"
+                onClick={onClose}
+                icon={<DonateIcon className="h-6 w-6" />}
+              />
+              <QuickAction
+                href="/preloved"
+                label="Preloved"
+                onClick={onClose}
+                icon={<BagIcon className="h-6 w-6" />}
+              />
+              <QuickAction
+                href="/about#contact"
+                label="Kontak"
+                onClick={onClose}
+                icon={<PhoneIcon className="h-6 w-6" />}
+              />
+            </div>
+          </>
+        ) : (
+          <>
+            <div className="border-b border-brand-green/15 bg-brand-green/5 p-4 text-center">
+              <p className="text-xs font-medium text-brand-green/80">
+                Masuk untuk simpan wishlist, chat, dan bertransaksi pakaian.
+              </p>
+              <Link
+                href="/login"
+                onClick={onClose}
+                className="mt-3 inline-flex w-full items-center justify-center rounded-full bg-brand-green py-2 text-xs font-bold text-brand-cream transition hover:bg-brand-green/90"
+              >
+                Masuk / Daftar
+              </Link>
+            </div>
+            <div className="grid grid-cols-3 divide-x divide-brand-green/15 border-b border-brand-green/15">
+              <QuickAction
+                href="/donasi"
+                label="Donasi"
+                onClick={onClose}
+                icon={<DonateIcon className="h-6 w-6" />}
+              />
+              <QuickAction
+                href="/preloved"
+                label="Preloved"
+                onClick={onClose}
+                icon={<BagIcon className="h-6 w-6" />}
+              />
+              <QuickAction
+                href="/about#contact"
+                label="Kontak"
+                onClick={onClose}
+                icon={<PhoneIcon className="h-6 w-6" />}
+              />
+            </div>
+          </>
+        )}
 
         <nav className="flex-1 overflow-y-auto">
           {NAV_LINKS.map((link) => (
@@ -313,42 +352,59 @@ export default function Navbar() {
                 ))}
               </nav>
 
-              <div className="flex items-center justify-end gap-4 sm:gap-5 justify-self-end">
-                <button type="button" aria-label="Cari" className="hidden md:inline-flex hover:opacity-70 transition-opacity">
+              <div className="flex items-center justify-end gap-3 sm:gap-4 justify-self-end">
+                <button type="button" aria-label="Cari" className="hidden md:inline-flex hover:opacity-70 transition-opacity text-brand-cream">
                   <NavIcon src="/incons/search.svg" alt="" />
                 </button>
-                <Link
-                  href={loggedIn ? '/chat' : '/login'}
-                  aria-label="Chat"
-                  aria-current={isActivePath(pathname, '/chat') ? 'page' : undefined}
-                  className="hover:opacity-70 transition-opacity text-brand-cream"
-                >
-                  <ChatIcon className="h-6 w-6" />
-                </Link>
-                <Link
-                  href={loggedIn ? '/wishlist' : '/login'}
-                  aria-label="Wishlist"
-                  className="relative hover:opacity-70 transition-opacity text-brand-cream"
-                >
-                  <NavIcon src="/incons/wishlist.svg" alt="" />
-                  {loggedIn && wishlist?.count ? (
-                    <span className="absolute -right-2 -top-2 min-w-4 rounded-full bg-brand-light-green px-1 text-center text-[10px] font-bold leading-4 text-brand-green">
-                      {wishlist.count > 99 ? '99+' : wishlist.count}
-                    </span>
-                  ) : null}
-                </Link>
-                <Link href={loggedIn ? '/dashboard' : '/login'} aria-label="Akun" className="hidden md:inline-flex hover:opacity-70 transition-opacity text-brand-cream">
-                  <UserIcon />
-                </Link>
-                <button type="button" aria-label="Keranjang belanja" className="relative hover:opacity-70 transition-opacity">
-                  <NavIcon src="/incons/bag.svg" alt="" />
-                </button>
+
+                {loggedIn ? (
+                  <>
+                    <Link
+                      href="/chat"
+                      aria-label="Chat"
+                      aria-current={isActivePath(pathname, '/chat') ? 'page' : undefined}
+                      className="hover:opacity-70 transition-opacity text-brand-cream"
+                    >
+                      <ChatIcon className="h-6 w-6" />
+                    </Link>
+                    <Link
+                      href="/wishlist"
+                      aria-label="Wishlist"
+                      className="relative hover:opacity-70 transition-opacity text-brand-cream"
+                    >
+                      <NavIcon src="/incons/wishlist.svg" alt="" />
+                      {wishlist?.count ? (
+                        <span className="absolute -right-2 -top-2 min-w-4 rounded-full bg-brand-light-green px-1 text-center text-[10px] font-bold leading-4 text-brand-green">
+                          {wishlist.count > 99 ? '99+' : wishlist.count}
+                        </span>
+                      ) : null}
+                    </Link>
+                    <Link
+                      href="/dashboard"
+                      aria-label="Akun"
+                      className="hidden md:inline-flex hover:opacity-70 transition-opacity text-brand-cream"
+                    >
+                      <UserIcon />
+                    </Link>
+                    <button type="button" aria-label="Keranjang belanja" className="relative hover:opacity-70 transition-opacity text-brand-cream">
+                      <NavIcon src="/incons/bag.svg" alt="" />
+                    </button>
+                  </>
+                ) : (
+                  <Link
+                    href="/login"
+                    className="inline-flex items-center rounded-full bg-brand-cream px-4 py-1.5 text-xs font-bold text-brand-green shadow-sm transition hover:bg-brand-cream/90"
+                  >
+                    Masuk
+                  </Link>
+                )}
+
                 <button
                   type="button"
                   aria-label={mobileOpen ? 'Tutup menu' : 'Buka menu'}
                   aria-expanded={mobileOpen}
                   onClick={() => setMobileOpen(true)}
-                  className="md:hidden hover:opacity-70 transition-opacity"
+                  className="md:hidden hover:opacity-70 transition-opacity text-brand-cream"
                 >
                   <NavIcon src="/incons/list.svg" alt="" className="h-7 w-7" />
                 </button>

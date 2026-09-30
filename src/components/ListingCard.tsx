@@ -27,8 +27,9 @@ export function ListingCard({
   const src = productImageUrl(listing.images?.[0], 600);
   const sellerName = listing.profiles?.full_name || 'Penjual';
   const wishlist = useOptionalWishlist();
-  const isOwn = Boolean(wishlist?.userId && wishlist.userId === listing.seller_id);
-  const canSave = showWishlist && !isOwn;
+  const isLoggedIn = Boolean(wishlist?.userId);
+  const isOwn = Boolean(isLoggedIn && wishlist?.userId === listing.seller_id);
+  const canSave = showWishlist && isLoggedIn && !isOwn;
 
   return (
     <Card className="relative overflow-hidden bg-white">

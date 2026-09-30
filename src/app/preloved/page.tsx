@@ -8,9 +8,12 @@ import { Input } from '@/components/ui/input';
 import { Select } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
 import { CLOTHING_CATEGORIES, CLOTHING_SIZES, LISTING_CONDITIONS } from '@/lib/constants';
+import { useOptionalWishlist } from '@/components/WishlistProvider';
 import type { Listing, Paginated } from '@/types/database';
 
 export default function PrelovedPage() {
+  const wishlist = useOptionalWishlist();
+  const loggedIn = Boolean(wishlist?.userId);
   const [items, setItems] = useState<Listing[]>([]);
   const [cursor, setCursor] = useState<string | null>(null);
   const [hasMore, setHasMore] = useState(false);
@@ -61,12 +64,14 @@ export default function PrelovedPage() {
             <h1 className="font-script text-4xl text-brand-green">Preloved</h1>
             <p className="mt-2 text-brand-green/80">Cari pakaian layak pakai. Bayar aman lewat Stripe sandbox.</p>
           </div>
-          <Link
-            href="/preloved/new"
-            className="inline-flex h-10 items-center rounded-lg bg-brand-green px-4 text-sm font-semibold text-brand-cream"
-          >
-            Jual pakaian
-          </Link>
+          {loggedIn ? (
+            <Link
+              href="/preloved/new"
+              className="inline-flex h-10 items-center rounded-lg bg-brand-green px-4 text-sm font-semibold text-brand-cream hover:bg-brand-green/90 transition-colors"
+            >
+              Jual pakaian
+            </Link>
+          ) : null}
         </div>
         <div className="mt-6 grid gap-3 md:grid-cols-4 lg:grid-cols-7">
           <Input
@@ -128,6 +133,14 @@ export default function PrelovedPage() {
             <ListingCard key={listing.id} listing={listing} />
           ))}
         </div>
+        {!loading && items.length === 0 && !error ? (
+          <div className="mt-8 rounded-2xl border border-brand-green/10 bg-brand-cream/20 p-10 text-center text-brand-green">
+            <p className="font-semibold text-base">Belum ada pakaian preloved yang tersedia.</p>
+            <p className="mt-1 text-sm text-brand-green/70">
+              Silakan cek kembali nanti atau ubah filter pencarianmu.
+            </p>
+          </div>
+        ) : null}
         {loading ? <p className="mt-6 text-sm text-brand-green/70">Memuat...</p> : null}
         {hasMore ? (
           <div className="mt-8 flex justify-center">

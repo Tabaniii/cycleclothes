@@ -13,7 +13,9 @@ export function WishlistButton({
   size?: 'sm' | 'md';
 }) {
   const wishlist = useOptionalWishlist();
-  const saved = wishlist?.has(listingId) ?? false;
+  if (!wishlist?.userId) return null;
+
+  const saved = wishlist.has(listingId);
   const iconClass = size === 'sm' ? 'h-5 w-5' : 'h-6 w-6';
 
   return (

@@ -54,3 +54,60 @@ body {
   background-color: var(--brand-green);
 }
 
+@keyframes hero-float-slow {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+@keyframes hero-float-reverse {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(6px);
+  }
+}
+
+@keyframes hero-glow {
+  0%, 100% {
+    opacity: 0.35;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.65;
+    transform: scale(1.08);
+  }
+}
+
+@keyframes hero-pulse-dot {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.4;
+    transform: scale(0.85);
+  }
+}
+
+.animate-hero-float {
+  animation: hero-float-slow 6s ease-in-out infinite;
+}
+
+.animate-hero-float-reverse {
+  animation: hero-float-reverse 7s ease-in-out infinite;
+}
+
+.animate-hero-glow {
+  animation: hero-glow 8s ease-in-out infinite;
+}
+
+.animate-hero-dot {
+  animation: hero-pulse-dot 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+

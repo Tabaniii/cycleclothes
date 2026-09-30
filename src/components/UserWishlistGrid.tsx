@@ -23,7 +23,7 @@ export function UserWishlistGrid({
   const [items, setItems] = useState<Listing[]>([]);
   const [cursor, setCursor] = useState<string | null>(null);
   const [hasMore, setHasMore] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(() => Boolean(userId));
   const [error, setError] = useState('');
 
   async function load(reset = false) {
@@ -45,6 +45,7 @@ export function UserWishlistGrid({
   }
 
   useEffect(() => {
+    if (!userId) return;
     load(true);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userId]);

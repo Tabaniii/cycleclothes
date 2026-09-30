@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
 import { PageShell } from '@/components/PageShell';
 import { UserBadgePill } from '@/components/UserBadgePill';
@@ -92,25 +93,43 @@ export default function ListingDetailPage() {
           </p>
           <p className="text-brand-green/80">{listing.description}</p>
           {error ? <p className="text-sm text-red-600">{error}</p> : null}
-          <div className="flex flex-wrap items-center gap-3">
-            {!isSeller ? (
-              <Button onClick={checkout} disabled={buying || listing.status !== 'available'}>
-                {buying ? 'Menyiapkan invoice...' : 'Beli via Stripe'}
-              </Button>
-            ) : (
-              <p className="text-sm text-brand-green/70">Ini listing kamu.</p>
-            )}
-            {!isSeller ? <WishlistButton listingId={listing.id} /> : null}
-          </div>
-          {!isSeller ? (
-            <ChatThread
-              variant="starter"
-              listingId={listing.id}
-              currentUserId={userId}
-              listingPrice={listing.price}
-              listingStatus={listing.status}
-            />
-          ) : null}
+
+          {!userId ? (
+            <div className="rounded-2xl border border-brand-green/20 bg-brand-cream/40 p-5 text-brand-green">
+              <p className="font-bold text-sm">Tertarik dengan pakaian ini?</p>
+              <p className="mt-1 text-xs text-brand-green/80">
+                Masuk untuk membeli aman via Stripe, chat langsung dengan penjual, atau simpan ke wishlist.
+              </p>
+              <Link
+                href={`/login?redirect=/preloved/${params.id}`}
+                className="mt-3.5 inline-flex items-center justify-center rounded-full bg-brand-green px-6 py-2.5 text-xs font-semibold text-brand-cream transition hover:bg-brand-green/90"
+              >
+                Masuk untuk Beli atau Chat
+              </Link>
+            </div>
+          ) : (
+            <>
+              <div className="flex flex-wrap items-center gap-3">
+                {!isSeller ? (
+                  <Button onClick={checkout} disabled={buying || listing.status !== 'available'}>
+                    {buying ? 'Menyiapkan invoice...' : 'Beli via Stripe'}
+                  </Button>
+                ) : (
+                  <p className="text-sm text-brand-green/70">Ini listing kamu.</p>
+                )}
+                {!isSeller ? <WishlistButton listingId={listing.id} /> : null}
+              </div>
+              {!isSeller ? (
+                <ChatThread
+                  variant="starter"
+                  listingId={listing.id}
+                  currentUserId={userId}
+                  listingPrice={listing.price}
+                  listingStatus={listing.status}
+                />
+              ) : null}
+            </>
+          )}
         </div>
       </div>
     </PageShell>

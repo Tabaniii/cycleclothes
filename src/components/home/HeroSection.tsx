@@ -21,18 +21,18 @@ export function HeroSection() {
   const [highlightMode, setHighlightMode] = useState<'all' | 'donation' | 'preloved'>('all');
 
   return (
-    <section className="relative isolate overflow-hidden px-4 pt-4 pb-12 sm:px-8 sm:pt-8 lg:px-10 lg:pb-16">
+    <section className="relative isolate flex min-h-[calc(100dvh-7.25rem)] flex-col justify-between overflow-hidden px-4 pt-3 pb-4 sm:px-8 sm:pt-4 sm:pb-6 lg:px-10 lg:pt-5 lg:pb-6">
       {/* Ambient background glow for depth and warmth */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute -top-28 left-1/2 -z-10 h-[520px] w-[520px] -translate-x-1/2 rounded-full bg-brand-light-green/15 blur-[130px] sm:h-[680px] sm:w-[680px] animate-hero-glow"
+        className="pointer-events-none absolute -top-28 left-1/2 -z-10 h-[520px] w-[520px] -translate-x-1/2 rounded-full bg-brand-light-green/15 blur-[130px] sm:h-[650px] sm:w-[650px] animate-hero-glow"
       />
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute right-0 top-1/4 -z-10 h-[400px] w-[400px] rounded-full bg-brand-cream/10 blur-[110px]"
+        className="pointer-events-none absolute right-0 top-1/4 -z-10 h-[380px] w-[380px] rounded-full bg-brand-cream/10 blur-[110px]"
       />
 
-      <div className="mx-auto grid max-w-6xl items-center gap-10 lg:grid-cols-[1.1fr_1fr] lg:gap-14">
+      <div className="mx-auto grid w-full max-w-6xl flex-1 items-center gap-8 lg:grid-cols-[1.1fr_1fr] lg:gap-12">
         {/* Left Column: Inspiring Copy & Actions */}
         <div className="flex flex-col items-start text-left">
           {/* Top category pill */}
@@ -48,7 +48,7 @@ export function HeroSection() {
           </div>
 
           {/* Main Title */}
-          <h1 className="mt-4 text-[2.5rem] font-extrabold uppercase leading-[0.98] tracking-tight text-white sm:mt-5 sm:text-5xl lg:text-[3.75rem]">
+          <h1 className="mt-3 text-[2.35rem] font-extrabold uppercase leading-[0.98] tracking-tight text-white sm:mt-4 sm:text-4xl lg:text-[3.25rem] xl:text-[3.5rem]">
             Semua berawal <br />
             <span className="text-brand-cream">dari </span>
             <span className="font-instrument italic font-normal text-brand-light-green capitalize">
@@ -57,19 +57,19 @@ export function HeroSection() {
           </h1>
 
           {/* Persuasive Subtitle */}
-          <p className="mt-4 max-w-xl text-sm leading-relaxed text-brand-cream/85 sm:mt-5 sm:text-base lg:text-lg">
+          <p className="mt-3 max-w-xl text-xs leading-relaxed text-brand-cream/85 sm:mt-4 sm:text-sm lg:text-base">
             Setiap helai pakaian punya cerita yang belum usai. Salurkan pakaian layak pakai
             langsung ke yayasan terverifikasi tanpa perantara, atau temukan koleksi preloved
             berkualitas dengan transaksi aman.
           </p>
 
           {/* Dual CTAs */}
-          <div className="mt-7 flex w-full flex-col gap-3 sm:mt-8 sm:w-auto sm:flex-row sm:items-center">
+          <div className="mt-6 flex w-full flex-col gap-3 sm:mt-7 sm:w-auto sm:flex-row sm:items-center">
             <Link
               href="/donasi"
               onMouseEnter={() => setHighlightMode('donation')}
               onMouseLeave={() => setHighlightMode('all')}
-              className={`group inline-flex items-center justify-center gap-2.5 rounded-full bg-brand-cream px-7 py-3.5 text-sm font-bold text-brand-green shadow-[0_10px_30px_rgba(216,212,184,0.25)] transition-all duration-300 hover:bg-[#e6e2cb] hover:shadow-[0_14px_38px_rgba(216,212,184,0.38)] hover:-translate-y-0.5 active:translate-y-0 ${
+              className={`group inline-flex items-center justify-center gap-2 rounded-full bg-brand-cream px-6 py-3 text-xs font-bold text-brand-green shadow-[0_10px_30px_rgba(216,212,184,0.25)] transition-all duration-300 hover:bg-[#e6e2cb] hover:shadow-[0_14px_38px_rgba(216,212,184,0.38)] hover:-translate-y-0.5 active:translate-y-0 sm:text-sm sm:px-7 sm:py-3.5 ${
                 highlightMode === 'donation' ? 'ring-4 ring-brand-light-green/40' : ''
               }`}
             >
@@ -82,7 +82,7 @@ export function HeroSection() {
               href="/preloved"
               onMouseEnter={() => setHighlightMode('preloved')}
               onMouseLeave={() => setHighlightMode('all')}
-              className={`group inline-flex items-center justify-center gap-2.5 rounded-full border border-brand-cream/35 bg-brand-cream/10 px-6 py-3.5 text-sm font-semibold text-brand-cream backdrop-blur-md transition-all duration-300 hover:bg-brand-cream/20 hover:border-brand-cream/60 hover:-translate-y-0.5 active:translate-y-0 ${
+              className={`group inline-flex items-center justify-center gap-2 rounded-full border border-brand-cream/35 bg-brand-cream/10 px-5 py-3 text-xs font-semibold text-brand-cream backdrop-blur-md transition-all duration-300 hover:bg-brand-cream/20 hover:border-brand-cream/60 hover:-translate-y-0.5 active:translate-y-0 sm:text-sm sm:px-6 sm:py-3.5 ${
                 highlightMode === 'preloved' ? 'ring-4 ring-brand-cream/30' : ''
               }`}
             >
@@ -91,26 +91,14 @@ export function HeroSection() {
             </Link>
           </div>
 
-          {/* Secondary Quick Anchor */}
-          <div className="mt-3.5 flex flex-wrap items-center gap-1.5 text-xs font-medium text-brand-cream/70 sm:mt-4 sm:gap-2">
-            <span>Ingin tahu dampak pakaian tak terpakai?</span>
-            <Link
-              href="#about-fast-fashion"
-              className="inline-flex items-center gap-1 font-semibold text-brand-light-green underline-offset-4 hover:underline"
-            >
-              <span>Pelajari Fast Fashion</span>
-              <ChevronDown className="h-3 w-3" />
-            </Link>
-          </div>
-
           {/* Social Proof & Trust Metrics Bar */}
-          <div className="mt-8 grid w-full grid-cols-3 gap-1.5 rounded-2xl border border-brand-cream/15 bg-brand-green/50 p-2.5 backdrop-blur-md transition-colors hover:border-brand-cream/30 sm:mt-9 sm:gap-4 sm:p-4">
+          <div className="mt-6 grid w-full grid-cols-3 gap-1.5 rounded-2xl border border-brand-cream/15 bg-brand-green/50 p-2.5 backdrop-blur-md transition-colors hover:border-brand-cream/30 sm:mt-7 sm:gap-4 sm:p-3.5">
             <div className="flex flex-col items-center border-r border-brand-cream/15 px-1 text-center sm:items-start sm:px-2 sm:text-left">
               <div className="flex items-center gap-1 text-brand-light-green sm:gap-1.5">
                 <PackageCheck className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-                <span className="text-sm font-extrabold text-white sm:text-lg">1.200+</span>
+                <span className="text-sm font-extrabold text-white sm:text-base lg:text-lg">1.200+</span>
               </div>
-              <span className="mt-0.5 text-[9px] leading-tight text-brand-cream/75 sm:text-xs">
+              <span className="mt-0.5 text-[9px] leading-tight text-brand-cream/75 sm:text-[11px]">
                 Pakaian Tersalurkan
               </span>
             </div>
@@ -118,9 +106,9 @@ export function HeroSection() {
             <div className="flex flex-col items-center border-r border-brand-cream/15 px-1 text-center sm:items-start sm:px-2 sm:text-left">
               <div className="flex items-center gap-1 text-brand-light-green sm:gap-1.5">
                 <ShieldCheck className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-                <span className="text-sm font-extrabold text-white sm:text-lg">15+</span>
+                <span className="text-sm font-extrabold text-white sm:text-base lg:text-lg">15+</span>
               </div>
-              <span className="mt-0.5 text-[9px] leading-tight text-brand-cream/75 sm:text-xs">
+              <span className="mt-0.5 text-[9px] leading-tight text-brand-cream/75 sm:text-[11px]">
                 Mitra Yayasan Resmi
               </span>
             </div>
@@ -128,9 +116,9 @@ export function HeroSection() {
             <div className="flex flex-col items-center px-1 text-center sm:items-start sm:px-2 sm:text-left">
               <div className="flex items-center gap-1 text-brand-light-green sm:gap-1.5">
                 <Leaf className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-                <span className="text-sm font-extrabold text-white sm:text-lg">100%</span>
+                <span className="text-sm font-extrabold text-white sm:text-base lg:text-lg">100%</span>
               </div>
-              <span className="mt-0.5 text-[9px] leading-tight text-brand-cream/75 sm:text-xs">
+              <span className="mt-0.5 text-[9px] leading-tight text-brand-cream/75 sm:text-[11px]">
                 Dampak Berkelanjutan
               </span>
             </div>
@@ -138,9 +126,9 @@ export function HeroSection() {
         </div>
 
         {/* Right Column: Editorial Visual Showcase with Floating Cards */}
-        <div className="relative mx-auto mt-4 w-full max-w-lg sm:mt-6 lg:mt-0 lg:max-w-none">
+        <div className="relative mx-auto mt-2 w-full max-w-md sm:mt-4 lg:mt-0 lg:max-w-lg">
           {/* Main Visual Frame */}
-          <div className="group relative aspect-[4/3] w-full overflow-hidden rounded-[2rem] border border-brand-cream/25 bg-neutral-900 shadow-2xl transition-all duration-500 hover:border-brand-cream/45 sm:aspect-[5/4] sm:rounded-[2.75rem]">
+          <div className="group relative aspect-[4/3] w-full overflow-hidden rounded-[2rem] border border-brand-cream/25 bg-neutral-900 shadow-2xl transition-all duration-500 hover:border-brand-cream/45 sm:aspect-[5/4] sm:rounded-[2.5rem]">
             <Image
               src="/home/hero-rack.jpg"
               alt="Koleksi Pakaian Berkelanjutan di CycleClothes"
@@ -227,7 +215,7 @@ export function HeroSection() {
           {/* Floating Glass Card 1 (Top-Right: Preloved Highlight) */}
           <Link
             href="/preloved"
-            className={`animate-hero-float absolute -top-4 -right-2 z-20 flex items-center gap-2.5 rounded-2xl border border-brand-cream/30 bg-brand-green/90 p-2.5 shadow-2xl backdrop-blur-xl transition-all duration-300 hover:scale-105 sm:-top-7 sm:-right-5 sm:gap-3 sm:p-3.5 ${
+            className={`animate-hero-float absolute -top-4 -right-2 z-20 flex items-center gap-2.5 rounded-2xl border border-brand-cream/30 bg-brand-green/90 p-2.5 shadow-2xl backdrop-blur-xl transition-all duration-300 hover:scale-105 sm:-top-6 sm:-right-4 sm:gap-3 sm:p-3.5 ${
               highlightMode === 'preloved'
                 ? 'ring-2 ring-brand-light-green shadow-[0_0_25px_rgba(193,193,119,0.4)]'
                 : ''
@@ -248,7 +236,7 @@ export function HeroSection() {
           {/* Floating Glass Card 2 (Bottom-Left: Donation Progress Highlight) */}
           <Link
             href="/donasi"
-            className={`animate-hero-float-reverse absolute -bottom-5 -left-2 z-20 flex w-60 items-center gap-2.5 rounded-2xl border border-brand-cream/30 bg-brand-green/95 p-2.5 shadow-2xl backdrop-blur-xl transition-all duration-300 hover:scale-105 sm:-bottom-8 sm:-left-6 sm:w-72 sm:gap-3 sm:p-3.5 ${
+            className={`animate-hero-float-reverse absolute -bottom-5 -left-2 z-20 flex w-56 items-center gap-2.5 rounded-2xl border border-brand-cream/30 bg-brand-green/95 p-2.5 shadow-2xl backdrop-blur-xl transition-all duration-300 hover:scale-105 sm:-bottom-6 sm:-left-5 sm:w-68 sm:gap-3 sm:p-3.5 ${
               highlightMode === 'donation'
                 ? 'ring-2 ring-brand-light-green shadow-[0_0_25px_rgba(193,193,119,0.4)]'
                 : ''
@@ -280,6 +268,18 @@ export function HeroSection() {
             </div>
           </Link>
         </div>
+      </div>
+
+      {/* Bottom Scroll Indicator Pill */}
+      <div className="mt-2 hidden items-center justify-center lg:flex">
+        <Link
+          href="#about-fast-fashion"
+          aria-label="Scroll ke bagian About Fast Fashion"
+          className="group inline-flex items-center gap-2 rounded-full border border-brand-cream/15 bg-brand-cream/5 px-4 py-1.5 text-[11px] font-medium tracking-wider uppercase text-brand-cream/70 backdrop-blur-sm transition-all hover:border-brand-cream/35 hover:bg-brand-cream/10 hover:text-brand-cream"
+        >
+          <span>Eksplorasi Lebih Lanjut</span>
+          <ChevronDown className="h-3.5 w-3.5 text-brand-light-green transition-transform group-hover:translate-y-0.5" />
+        </Link>
       </div>
     </section>
   );

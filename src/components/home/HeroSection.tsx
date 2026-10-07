@@ -1,77 +1,98 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import {
-  HeartHandshake,
-  ShoppingBag,
-  Sparkles,
-  ArrowRight,
-  ShieldCheck,
-  PackageCheck,
-  Leaf,
-  ChevronDown,
-  CheckCircle2,
-  Tag,
-} from 'lucide-react';
+import { ArrowRight, HeartHandshake, ShoppingBag, ChevronDown } from 'lucide-react';
 
-export function HeroSection() {
-  const [activePin, setActivePin] = useState<number | null>(null);
-  const [highlightMode, setHighlightMode] = useState<'all' | 'donation' | 'preloved'>('all');
+const STATS = [
+  { value: 1200, suffix: '+', label: 'Pakaian Tersalurkan' },
+  { value: 15, suffix: '+', label: 'Mitra Yayasan' },
+  { value: 100, suffix: '%', label: 'Dampak Berkelanjutan' },
+];
+
+function CountUp({
+  to,
+  suffix = '',
+  duration = 1500,
+}: {
+  to: number;
+  suffix?: string;
+  duration?: number;
+}) {
+  const [value, setValue] = useState(0);
+
+  useEffect(() => {
+    const reduced =
+      typeof window !== 'undefined' &&
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    if (reduced) {
+      setValue(to);
+      return;
+    }
+
+    let raf = 0;
+    const start = performance.now();
+    const tick = (now: number) => {
+      const progress = Math.min((now - start) / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      setValue(Math.round(to * eased));
+      if (progress < 1) raf = requestAnimationFrame(tick);
+    };
+
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [to, duration]);
 
   return (
-    <section className="relative isolate flex min-h-[calc(100dvh-7.25rem)] flex-col justify-between overflow-hidden px-4 pt-3 pb-4 sm:px-8 sm:pt-4 sm:pb-6 lg:px-10 lg:pt-5 lg:pb-6">
-      {/* Ambient background glow for depth and warmth */}
+    <span>
+      {value.toLocaleString('id-ID')}
+      {suffix}
+    </span>
+  );
+}
+
+export function HeroSection() {
+  return (
+    <section className="relative isolate flex min-h-[calc(100dvh-5rem)] flex-col justify-between overflow-hidden px-6 py-8 sm:px-10 sm:py-12 lg:px-16 lg:py-14">
+      {/* Subtle ambient glow */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute -top-28 left-1/2 -z-10 h-[520px] w-[520px] -translate-x-1/2 rounded-full bg-brand-light-green/15 blur-[130px] sm:h-[650px] sm:w-[650px] animate-hero-glow"
-      />
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute right-0 top-1/4 -z-10 h-[380px] w-[380px] rounded-full bg-brand-cream/10 blur-[110px]"
+        className="pointer-events-none absolute -top-40 left-1/2 -z-10 h-[550px] w-[550px] -translate-x-1/2 rounded-full bg-brand-light-green/10 blur-[140px]"
       />
 
-      <div className="mx-auto grid w-full max-w-6xl flex-1 items-center gap-8 lg:grid-cols-[1.1fr_1fr] lg:gap-12">
-        {/* Left Column: Inspiring Copy & Actions */}
-        <div className="flex flex-col items-start text-left">
-          {/* Top category pill */}
-          <div className="inline-flex max-w-full items-center gap-2 rounded-full border border-brand-cream/25 bg-brand-cream/10 px-3 py-1.5 backdrop-blur-md transition-all hover:bg-brand-cream/15 sm:px-3.5">
-            <span className="relative flex h-2 w-2 shrink-0">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-brand-light-green opacity-75" />
-              <span className="relative inline-flex h-2 w-2 rounded-full bg-brand-light-green" />
-            </span>
-            <span className="truncate text-[10px] font-semibold uppercase tracking-wider text-brand-cream sm:text-xs">
-              Fashion Sirkular & Donasi Tepercaya
-            </span>
-            <Sparkles className="h-3.5 w-3.5 shrink-0 text-brand-light-green" />
+      <div className="mx-auto grid w-full max-w-6xl flex-1 items-center gap-10 lg:grid-cols-12 lg:gap-14">
+        {/* Left Column: Copy & Actions */}
+        <div className="flex flex-col items-start text-left lg:col-span-7">
+          {/* Category Kicker */}
+          <div className="inline-flex items-center gap-2.5 text-xs font-semibold uppercase tracking-[0.2em] text-brand-light-green">
+            <span className="h-1.5 w-1.5 rounded-full bg-brand-light-green" />
+            <span>Fashion Sirkular & Donasi</span>
           </div>
 
-          {/* Main Title */}
-          <h1 className="mt-3 text-[2.35rem] font-extrabold uppercase leading-[0.98] tracking-tight text-white sm:mt-4 sm:text-4xl lg:text-[3.25rem] xl:text-[3.5rem]">
-            Semua berawal <br />
-            <span className="text-brand-cream">dari </span>
-            <span className="font-instrument italic font-normal text-brand-light-green capitalize">
-              lemarimu.
+          {/* Headline */}
+          <h1 className="mt-4 text-4xl font-extrabold uppercase leading-[1.05] tracking-tight text-white sm:text-5xl lg:text-6xl [text-wrap:balance]">
+            Semua berawal{' '}
+            <span className="block text-brand-cream">
+              dari{' '}
+              <span className="font-instrument italic font-normal text-brand-light-green capitalize">
+                lemarimu.
+              </span>
             </span>
           </h1>
 
-          {/* Persuasive Subtitle */}
-          <p className="mt-3 max-w-xl text-xs leading-relaxed text-brand-cream/85 sm:mt-4 sm:text-sm lg:text-base">
-            Setiap helai pakaian punya cerita yang belum usai. Salurkan pakaian layak pakai
-            langsung ke yayasan terverifikasi tanpa perantara, atau temukan koleksi preloved
-            berkualitas dengan transaksi aman.
+          {/* Subtitle */}
+          <p className="mt-5 max-w-xl text-sm leading-relaxed text-brand-cream/80 sm:text-base lg:text-lg [text-wrap:pretty]">
+            Salurkan pakaian layak pakai langsung ke yayasan terverifikasi tanpa perantara, atau
+            temukan koleksi preloved berkualitas dengan transaksi aman.
           </p>
 
-          {/* Dual CTAs */}
-          <div className="mt-6 flex w-full flex-col gap-3 sm:mt-7 sm:w-auto sm:flex-row sm:items-center">
+          {/* Actions */}
+          <div className="mt-8 flex w-full flex-col gap-3.5 sm:w-auto sm:flex-row sm:items-center">
             <Link
               href="/donasi"
-              onMouseEnter={() => setHighlightMode('donation')}
-              onMouseLeave={() => setHighlightMode('all')}
-              className={`group inline-flex items-center justify-center gap-2 rounded-full bg-brand-cream px-6 py-3 text-xs font-bold text-brand-green shadow-[0_10px_30px_rgba(216,212,184,0.25)] transition-all duration-300 hover:bg-[#e6e2cb] hover:shadow-[0_14px_38px_rgba(216,212,184,0.38)] hover:-translate-y-0.5 active:translate-y-0 sm:text-sm sm:px-7 sm:py-3.5 ${
-                highlightMode === 'donation' ? 'ring-4 ring-brand-light-green/40' : ''
-              }`}
+              className="group inline-flex items-center justify-center gap-2.5 rounded-full bg-brand-cream px-7 py-3.5 text-sm font-bold text-brand-green shadow-md transition-all duration-200 hover:bg-white hover:shadow-xl hover:-translate-y-0.5 active:translate-y-0"
             >
               <HeartHandshake className="h-4 w-4 transition-transform group-hover:scale-110" />
               <span>Mulai Donasi</span>
@@ -80,55 +101,31 @@ export function HeroSection() {
 
             <Link
               href="/preloved"
-              onMouseEnter={() => setHighlightMode('preloved')}
-              onMouseLeave={() => setHighlightMode('all')}
-              className={`group inline-flex items-center justify-center gap-2 rounded-full border border-brand-cream/35 bg-brand-cream/10 px-5 py-3 text-xs font-semibold text-brand-cream backdrop-blur-md transition-all duration-300 hover:bg-brand-cream/20 hover:border-brand-cream/60 hover:-translate-y-0.5 active:translate-y-0 sm:text-sm sm:px-6 sm:py-3.5 ${
-                highlightMode === 'preloved' ? 'ring-4 ring-brand-cream/30' : ''
-              }`}
+              className="group inline-flex items-center justify-center gap-2.5 rounded-full border border-brand-cream/30 bg-brand-cream/5 px-6 py-3.5 text-sm font-semibold text-brand-cream backdrop-blur-sm transition-all duration-200 hover:border-brand-cream/60 hover:bg-brand-cream/15 hover:-translate-y-0.5 active:translate-y-0"
             >
               <ShoppingBag className="h-4 w-4 text-brand-light-green transition-transform group-hover:scale-110" />
               <span>Jelajahi Preloved</span>
             </Link>
           </div>
 
-          {/* Social Proof & Trust Metrics Bar */}
-          <div className="mt-6 grid w-full grid-cols-3 gap-1.5 rounded-2xl border border-brand-cream/15 bg-brand-green/50 p-2.5 backdrop-blur-md transition-colors hover:border-brand-cream/30 sm:mt-7 sm:gap-4 sm:p-3.5">
-            <div className="flex flex-col items-center border-r border-brand-cream/15 px-1 text-center sm:items-start sm:px-2 sm:text-left">
-              <div className="flex items-center gap-1 text-brand-light-green sm:gap-1.5">
-                <PackageCheck className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-                <span className="text-sm font-extrabold text-white sm:text-base lg:text-lg">1.200+</span>
+          {/* Minimalist Metrics */}
+          <div className="mt-12 grid w-full max-w-lg grid-cols-3 gap-6 border-t border-brand-cream/15 pt-6">
+            {STATS.map((stat) => (
+              <div key={stat.label} className="flex flex-col">
+                <span className="text-xl font-extrabold tracking-tight text-white sm:text-2xl">
+                  <CountUp to={stat.value} suffix={stat.suffix} />
+                </span>
+                <span className="mt-1 text-xs text-brand-cream/70 sm:text-xs">
+                  {stat.label}
+                </span>
               </div>
-              <span className="mt-0.5 text-[9px] leading-tight text-brand-cream/75 sm:text-[11px]">
-                Pakaian Tersalurkan
-              </span>
-            </div>
-
-            <div className="flex flex-col items-center border-r border-brand-cream/15 px-1 text-center sm:items-start sm:px-2 sm:text-left">
-              <div className="flex items-center gap-1 text-brand-light-green sm:gap-1.5">
-                <ShieldCheck className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-                <span className="text-sm font-extrabold text-white sm:text-base lg:text-lg">15+</span>
-              </div>
-              <span className="mt-0.5 text-[9px] leading-tight text-brand-cream/75 sm:text-[11px]">
-                Mitra Yayasan Resmi
-              </span>
-            </div>
-
-            <div className="flex flex-col items-center px-1 text-center sm:items-start sm:px-2 sm:text-left">
-              <div className="flex items-center gap-1 text-brand-light-green sm:gap-1.5">
-                <Leaf className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-                <span className="text-sm font-extrabold text-white sm:text-base lg:text-lg">100%</span>
-              </div>
-              <span className="mt-0.5 text-[9px] leading-tight text-brand-cream/75 sm:text-[11px]">
-                Dampak Berkelanjutan
-              </span>
-            </div>
+            ))}
           </div>
         </div>
 
-        {/* Right Column: Editorial Visual Showcase with Floating Cards */}
-        <div className="relative mx-auto mt-2 w-full max-w-md sm:mt-4 lg:mt-0 lg:max-w-lg">
-          {/* Main Visual Frame */}
-          <div className="group relative aspect-[4/3] w-full overflow-hidden rounded-[2rem] border border-brand-cream/25 bg-neutral-900 shadow-2xl transition-all duration-500 hover:border-brand-cream/45 sm:aspect-[5/4] sm:rounded-[2.5rem]">
+        {/* Right Column: Clean Editorial Visual Showcase */}
+        <div className="relative mx-auto w-full max-w-md lg:col-span-5 lg:max-w-none">
+          <div className="group relative aspect-[4/3] w-full overflow-hidden rounded-3xl border border-brand-cream/20 bg-neutral-900 shadow-2xl transition-all duration-500 hover:border-brand-cream/40 sm:aspect-[5/4] lg:aspect-[4/5]">
             <Image
               src="/home/hero-rack.jpg"
               alt="Koleksi Pakaian Berkelanjutan di CycleClothes"
@@ -136,151 +133,32 @@ export function HeroSection() {
               priority
               fetchPriority="high"
               className="object-cover object-center transition-transform duration-700 ease-out group-hover:scale-105"
-              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 42vw"
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 40vw"
             />
+            {/* Subtle Gradient Scrim for Visual Depth */}
+            <div className="absolute inset-0 bg-gradient-to-t from-brand-green/60 via-transparent to-transparent pointer-events-none" />
 
-            {/* Gradient Scrims for text contrast & mood */}
-            <div className="absolute inset-0 bg-gradient-to-t from-brand-green/80 via-transparent to-black/20 pointer-events-none" />
-            <div className="absolute inset-0 bg-brand-light-green/10 mix-blend-overlay pointer-events-none" />
-
-            {/* Interactive Hotspot Pin 1 (Sweater) */}
-            <div
-              className="absolute left-[26%] top-[34%] z-20 cursor-pointer"
-              onMouseEnter={() => setActivePin(1)}
-              onMouseLeave={() => setActivePin(null)}
-              onClick={() => setActivePin(activePin === 1 ? null : 1)}
-            >
-              <div className="relative flex items-center justify-center">
-                <span className="absolute h-6 w-6 animate-ping rounded-full bg-brand-cream/60" />
-                <button
-                  type="button"
-                  aria-label="Informasi Sweater Rajut"
-                  className="relative flex h-5 w-5 items-center justify-center rounded-full bg-brand-cream text-[10px] font-bold text-brand-green shadow-md transition-transform hover:scale-125"
-                >
-                  +
-                </button>
-              </div>
-
-              {activePin === 1 && (
-                <div className="absolute left-6 top-1/2 -translate-y-1/2 whitespace-nowrap rounded-xl border border-brand-cream/30 bg-brand-green/95 px-3 py-2 text-xs text-brand-cream shadow-2xl backdrop-blur-md animate-in fade-in zoom-in-95 duration-200">
-                  <div className="flex items-center gap-1.5 font-semibold text-white">
-                    <Tag className="h-3 w-3 text-brand-light-green" />
-                    <span>Sweater Rajut Forest</span>
-                  </div>
-                  <p className="mt-0.5 text-[10px] text-brand-light-green">
-                    Preloved Terkurasi · Rp 85.000 · Seperti Baru
-                  </p>
-                </div>
-              )}
-            </div>
-
-            {/* Interactive Hotspot Pin 2 (Jacket / Linen) */}
-            <div
-              className="absolute left-[54%] top-[40%] z-20 cursor-pointer"
-              onMouseEnter={() => setActivePin(2)}
-              onMouseLeave={() => setActivePin(null)}
-              onClick={() => setActivePin(activePin === 2 ? null : 2)}
-            >
-              <div className="relative flex items-center justify-center">
-                <span className="absolute h-6 w-6 animate-ping rounded-full bg-brand-light-green/60" />
-                <button
-                  type="button"
-                  aria-label="Informasi Jaket Donasi"
-                  className="relative flex h-5 w-5 items-center justify-center rounded-full bg-brand-light-green text-[10px] font-bold text-brand-green shadow-md transition-transform hover:scale-125"
-                >
-                  +
-                </button>
-              </div>
-
-              {activePin === 2 && (
-                <div className="absolute left-6 top-1/2 -translate-y-1/2 whitespace-nowrap rounded-xl border border-brand-cream/30 bg-brand-green/95 px-3 py-2 text-xs text-brand-cream shadow-2xl backdrop-blur-md animate-in fade-in zoom-in-95 duration-200">
-                  <div className="flex items-center gap-1.5 font-semibold text-white">
-                    <HeartHandshake className="h-3 w-3 text-brand-light-green" />
-                    <span>Jaket Utilitas Katun</span>
-                  </div>
-                  <p className="mt-0.5 text-[10px] text-brand-light-green">
-                    Donasi Terverifikasi · Layak Pakai · Siap Salur
-                  </p>
-                </div>
-              )}
-            </div>
-
-            {/* Clean bottom-right aesthetic pill tag */}
-            <div className="absolute right-3.5 bottom-3.5 z-10 flex items-center gap-1.5 rounded-full border border-brand-cream/25 bg-brand-green/85 px-3 py-1 text-[10px] font-medium text-brand-cream shadow-lg backdrop-blur-md sm:right-4 sm:bottom-4 sm:gap-2 sm:px-3.5 sm:py-1.5 sm:text-[11px]">
+            {/* Minimalist Badge Tag */}
+            <div className="absolute bottom-4 left-4 z-10 flex items-center gap-2 rounded-full border border-brand-cream/20 bg-brand-green/80 px-3.5 py-1.5 text-xs text-brand-cream backdrop-blur-md">
               <span className="h-1.5 w-1.5 rounded-full bg-brand-light-green" />
-              <span>100% Circular Fashion</span>
+              <span className="font-medium">100% Circular Fashion</span>
             </div>
           </div>
-
-          {/* Floating Glass Card 1 (Top-Right: Preloved Highlight) */}
-          <Link
-            href="/preloved"
-            className={`animate-hero-float absolute -top-4 -right-2 z-20 flex items-center gap-2.5 rounded-2xl border border-brand-cream/30 bg-brand-green/90 p-2.5 shadow-2xl backdrop-blur-xl transition-all duration-300 hover:scale-105 sm:-top-6 sm:-right-4 sm:gap-3 sm:p-3.5 ${
-              highlightMode === 'preloved'
-                ? 'ring-2 ring-brand-light-green shadow-[0_0_25px_rgba(193,193,119,0.4)]'
-                : ''
-            }`}
-          >
-            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-brand-light-green/20 text-brand-light-green sm:h-10 sm:w-10">
-              <Sparkles className="h-4 w-4 sm:h-5 sm:w-5" />
-            </div>
-            <div>
-              <div className="flex items-center gap-1">
-                <p className="text-[11px] font-bold text-brand-cream sm:text-xs">Kurasi Pilihan</p>
-                <CheckCircle2 className="h-3 w-3 text-brand-light-green" />
-              </div>
-              <p className="text-[9px] text-brand-light-green sm:text-[10px]">Kondisi 9.5/10 · Terawat</p>
-            </div>
-          </Link>
-
-          {/* Floating Glass Card 2 (Bottom-Left: Donation Progress Highlight) */}
-          <Link
-            href="/donasi"
-            className={`animate-hero-float-reverse absolute -bottom-5 -left-2 z-20 flex w-56 items-center gap-2.5 rounded-2xl border border-brand-cream/30 bg-brand-green/95 p-2.5 shadow-2xl backdrop-blur-xl transition-all duration-300 hover:scale-105 sm:-bottom-6 sm:-left-5 sm:w-68 sm:gap-3 sm:p-3.5 ${
-              highlightMode === 'donation'
-                ? 'ring-2 ring-brand-light-green shadow-[0_0_25px_rgba(193,193,119,0.4)]'
-                : ''
-            }`}
-          >
-            <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded-xl border border-brand-cream/25 sm:h-12 sm:w-12">
-              <Image
-                src="/home/hero-package.jpg"
-                alt="Paket Pakaian Terverifikasi"
-                fill
-                className="object-cover"
-                sizes="48px"
-              />
-            </div>
-            <div className="min-w-0 flex-1">
-              <div className="flex items-center justify-between text-[10px] sm:text-[11px]">
-                <span className="truncate font-semibold text-brand-cream">Panti Bina Nusa</span>
-                <span className="font-bold text-brand-light-green">92%</span>
-              </div>
-              <div className="mt-1 h-1.5 w-full overflow-hidden rounded-full bg-white/15 sm:mt-1.5">
-                <div
-                  className="h-full rounded-full bg-brand-light-green transition-all"
-                  style={{ width: '92%' }}
-                />
-              </div>
-              <p className="mt-0.5 text-[8.5px] text-brand-cream/70 sm:mt-1 sm:text-[9px]">
-                46/50 pakaian donasi terkumpul
-              </p>
-            </div>
-          </Link>
         </div>
       </div>
 
-      {/* Bottom Scroll Indicator Pill */}
-      <div className="mt-2 hidden items-center justify-center lg:flex">
+      {/* Bottom Scroll Indicator */}
+      <div className="mt-6 flex items-center justify-center">
         <Link
           href="#about-fast-fashion"
           aria-label="Scroll ke bagian About Fast Fashion"
-          className="group inline-flex items-center gap-2 rounded-full border border-brand-cream/15 bg-brand-cream/5 px-4 py-1.5 text-[11px] font-medium tracking-wider uppercase text-brand-cream/70 backdrop-blur-sm transition-all hover:border-brand-cream/35 hover:bg-brand-cream/10 hover:text-brand-cream"
+          className="group inline-flex items-center gap-2 text-xs font-medium uppercase tracking-widest text-brand-cream/60 transition-colors hover:text-brand-cream"
         >
-          <span>Eksplorasi Lebih Lanjut</span>
-          <ChevronDown className="h-3.5 w-3.5 text-brand-light-green transition-transform group-hover:translate-y-0.5" />
+          <span>Eksplorasi</span>
+          <ChevronDown className="h-4 w-4 text-brand-light-green transition-transform duration-300 group-hover:translate-y-0.5" />
         </Link>
       </div>
     </section>
   );
 }
+
